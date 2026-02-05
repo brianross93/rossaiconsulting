@@ -13,6 +13,7 @@ const apiKey = process.env.OPEN_AI_KEY;
 const model = "gpt-5-mini";
 const openai = apiKey ? new OpenAI({ apiKey }) : null;
 const calendlyToken = process.env.CALENDLY_API;
+const calendlySchedulingUrl = process.env.CALENDLY_SCHEDULING_URL;
 
 app.set("trust proxy", true);
 app.use(express.json({ limit: "20kb" }));
@@ -111,9 +112,12 @@ app.post("/api/schedule", async (req, res) => {
     const body = encodeURIComponent(bodyLines.join("\n"));
     const mailto = `mailto:hello@rossapplied.ai?subject=${subject}&body=${body}`;
 
+    const fallbackSchedulingUrl =
+      calendlySchedulingUrl || "https://rossapplied.ai/book-call/";
+
     if (!calendlyToken) {
       return res.json({
-        schedulingUrl: "https://rossapplied.ai/book-call/",
+        schedulingUrl: fallbackSchedulingUrl,
         mailto,
         summary:
           "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
@@ -127,12 +131,24 @@ app.post("/api/schedule", async (req, res) => {
 
     const userResp = await fetch("https://api.calendly.com/users/me", { headers });
     if (!userResp.ok) {
-      return res.status(500).json({ error: "Calendly user lookup failed." });
+      console.error("Calendly user lookup failed:", userResp.status);
+      return res.json({
+        schedulingUrl: fallbackSchedulingUrl,
+        mailto,
+        summary:
+          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
+      });
     }
     const userData = await userResp.json();
     const userUri = userData?.resource?.uri;
     if (!userUri) {
-      return res.status(500).json({ error: "Calendly user not found." });
+      console.error("Calendly user not found.");
+      return res.json({
+        schedulingUrl: fallbackSchedulingUrl,
+        mailto,
+        summary:
+          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
+      });
     }
 
     const eventsResp = await fetch(
@@ -140,12 +156,24 @@ app.post("/api/schedule", async (req, res) => {
       { headers }
     );
     if (!eventsResp.ok) {
-      return res.status(500).json({ error: "Calendly event types lookup failed." });
+      console.error("Calendly event types lookup failed:", eventsResp.status);
+      return res.json({
+        schedulingUrl: fallbackSchedulingUrl,
+        mailto,
+        summary:
+          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
+      });
     }
     const eventsData = await eventsResp.json();
     const eventTypes = Array.isArray(eventsData?.collection) ? eventsData.collection : [];
     if (eventTypes.length === 0) {
-      return res.status(500).json({ error: "No Calendly event types found." });
+      console.error("No Calendly event types found.");
+      return res.json({
+        schedulingUrl: fallbackSchedulingUrl,
+        mailto,
+        summary:
+          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
+      });
     }
 
     const preferred = eventTypes.find((evt) =>
