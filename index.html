@@ -12,14 +12,18 @@
        name="keywords"
        content="ai consulting tulsa, ai integration tulsa, ai transformation tulsa, ai services tulsa oklahoma"
      />
+    <meta name="robots" content="index, follow" />
      <meta name="theme-color" content="#1e3a5f" />
     <meta property="og:title" content="Ross Applied AI Consulting | AI Consulting in Tulsa" />
      <meta
        property="og:description"
        content="Practical AI for Tulsa businesses. Strategy, integration, training, and support."
      />
+    <meta property="og:url" content="https://rossapplied.ai/" />
      <meta property="og:type" content="website" />
      <meta property="og:locale" content="en_US" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://rossapplied.ai/" />
      <link rel="stylesheet" href="/styles.css" />
      <link rel="preconnect" href="https://fonts.googleapis.com" />
      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -314,5 +318,110 @@
          </div>
        </div>
      </footer>
+    <button class="chatbot-launcher" id="chatbotLauncher" type="button">
+      Chat with Ross Applied AI
+    </button>
+    <div class="chatbot-panel" id="chatbotPanel" role="dialog" aria-live="polite">
+      <div class="chatbot-header">
+        <h4>AI Concierge</h4>
+        <p class="note" style="color: rgba(255, 255, 255, 0.8)">
+          Ask about services, pricing, or booking a call.
+        </p>
+      </div>
+      <div class="chatbot-messages" id="chatbotMessages">
+        <div class="chatbot-bubble bot">
+          Hi! I can help with services, pricing, or booking your free intro call.
+        </div>
+      </div>
+      <div class="chatbot-actions">
+        <button type="button" data-prompt="What services do you offer?">Services</button>
+        <button type="button" data-prompt="What is pricing?">Pricing</button>
+        <button type="button" data-prompt="How do I book a call?">Book a call</button>
+      </div>
+      <form class="chatbot-form" id="chatbotForm">
+        <input
+          id="chatbotInput"
+          name="message"
+          type="text"
+          placeholder="Type your question..."
+          autocomplete="off"
+        />
+        <button type="submit">Send</button>
+      </form>
+      <div class="chatbot-footer">
+        Want to book now? Visit <a href="/book-call/">rossapplied.ai/book-call</a>.
+      </div>
+    </div>
+    <script>
+      (function () {
+        var launcher = document.getElementById("chatbotLauncher");
+        var panel = document.getElementById("chatbotPanel");
+        var messages = document.getElementById("chatbotMessages");
+        var form = document.getElementById("chatbotForm");
+        var input = document.getElementById("chatbotInput");
+        var actions = panel.querySelectorAll("[data-prompt]");
+        var inFlight = false;
+
+        function addMessage(text, who) {
+          var bubble = document.createElement("div");
+          bubble.className = "chatbot-bubble " + who;
+          bubble.textContent = text;
+          messages.appendChild(bubble);
+          messages.scrollTop = messages.scrollHeight;
+          return bubble;
+        }
+
+        async function sendMessage(text) {
+          if (inFlight) {
+            return;
+          }
+          inFlight = true;
+          addMessage(text, "user");
+          var botBubble = addMessage("Thinking...", "bot");
+
+          try {
+            var response = await fetch("/api/chat", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ message: text })
+            });
+            if (!response.ok) {
+              throw new Error("Request failed");
+            }
+            var data = await response.json();
+            botBubble.textContent = data.reply || "Please try again.";
+          } catch (error) {
+            botBubble.textContent =
+              "Sorry, I ran into an error. Please try again or email hello@rossapplied.ai.";
+          } finally {
+            inFlight = false;
+            input.focus();
+          }
+        }
+
+        launcher.addEventListener("click", function () {
+          panel.classList.toggle("open");
+        });
+
+        actions.forEach(function (button) {
+          button.addEventListener("click", function () {
+            var prompt = button.getAttribute("data-prompt");
+            if (prompt) {
+              sendMessage(prompt);
+            }
+          });
+        });
+
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          var value = input.value.trim();
+          if (!value) {
+            return;
+          }
+          input.value = "";
+          sendMessage(value);
+        });
+      })();
+    </script>
    </body>
  </html>

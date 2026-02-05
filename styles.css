@@ -277,6 +277,127 @@
    gap: 32px;
  }
  
+.chatbot-launcher {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 50;
+  background: var(--color-primary);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.2);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chatbot-panel {
+  position: fixed;
+  right: 24px;
+  bottom: 90px;
+  width: min(360px, 92vw);
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.2);
+  border: 1px solid #e2e8f0;
+  z-index: 60;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chatbot-panel.open {
+  display: flex;
+}
+
+.chatbot-header {
+  background: var(--color-primary);
+  color: #ffffff;
+  padding: 16px;
+}
+
+.chatbot-header h4 {
+  margin-bottom: 4px;
+}
+
+.chatbot-messages {
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+  max-height: 320px;
+  overflow-y: auto;
+  background: #f8fafc;
+}
+
+.chatbot-bubble {
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+
+.chatbot-bubble.bot {
+  background: #e2e8f0;
+  color: #1f2937;
+  justify-self: start;
+}
+
+.chatbot-bubble.user {
+  background: var(--color-secondary);
+  color: #ffffff;
+  justify-self: end;
+}
+
+.chatbot-actions {
+  padding: 12px 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.chatbot-actions button {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.chatbot-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 12px 16px 16px;
+  border-top: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.chatbot-form input {
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  padding: 10px 12px;
+  font: inherit;
+}
+
+.chatbot-form button {
+  background: var(--color-accent);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.chatbot-footer {
+  padding: 0 16px 16px;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  background: #ffffff;
+}
+
  @media (max-width: 720px) {
    .nav-links {
      display: none;
