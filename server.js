@@ -186,9 +186,6 @@ app.post("/api/walkthrough", async (req, res) => {
     if (!openai) {
       return res.status(500).json({ error: "Missing OPEN_AI_KEY." });
     }
-    if (!resendApiKey) {
-      return res.status(500).json({ error: "Missing RESEND_API_KEY." });
-    }
 
     const payload = req.body || {};
     const answers = Array.isArray(payload.answers) ? payload.answers : [];
@@ -306,17 +303,28 @@ app.post("/api/walkthrough", async (req, res) => {
       "Book a call: https://rossapplied.ai/book-call/"
     ].join("\n");
 
-    const recipients = [userEmail, "hello@rossapplied.ai"];
-    await sendResendEmail({
-      to: recipients,
-      subject: emailSubject,
-      html,
-      text
-    });
+    let emailError = "";
+    if (!resendApiKey) {
+      emailError = "Missing RESEND_API_KEY.";
+    } else {
+      try {
+        const recipients = [userEmail, "hello@rossapplied.ai"];
+        await sendResendEmail({
+          to: recipients,
+          subject: emailSubject,
+          html,
+          text
+        });
+      } catch (sendError) {
+        emailError = sendError?.message || "Email send failed.";
+        console.error("Resend send error:", emailError);
+      }
+    }
 
     res.json({
       ...parsed,
-      emailed_to: userEmail
+      emailed_to: emailError ? "" : userEmail,
+      email_error: emailError
     });
   } catch (error) {
     const message = error?.message || "Walkthrough service error.";

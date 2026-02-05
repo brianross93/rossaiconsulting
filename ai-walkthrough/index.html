@@ -181,6 +181,7 @@
             ? data.recommended_services
             : [];
           var emailedTo = data.emailed_to ? String(data.emailed_to) : "";
+          var emailError = data.email_error ? String(data.email_error) : "";
           var servicesHtml = services
             .map(function (service) {
               return '<span class="pill">' + service + "</span>";
@@ -189,9 +190,13 @@
           var emailBadge = emailedTo
             ? '<div class="email-success">Email sent to ' + emailedTo + ".</div>"
             : "";
+          var emailWarning = emailError
+            ? '<div class="email-warning">We couldn’t send the email. You can still book a call.</div>'
+            : "";
           results.innerHTML = ""
             + '<div class="result-card">'
             + emailBadge
+            + emailWarning
             + '<h3>Recommended path</h3>'
             + "<p>" + (data.summary || "Here’s a tailored recommendation.") + "</p>"
             + '<div class="result-services">' + servicesHtml + "</div>"
