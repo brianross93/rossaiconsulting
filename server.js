@@ -225,36 +225,97 @@ app.post("/api/walkthrough", async (req, res) => {
       "Do not include markdown or extra keys."
     ].join(" ");
 
-    const response = await openai.responses.create({
-      model,
-      input: [
-        {
-          role: "system",
-          content: [{ type: "input_text", text: systemPrompt }]
-        },
-        {
-          role: "user",
-          content: [
-            {
-              type: "input_text",
-              text: JSON.stringify({ answers })
-            }
-          ]
-        }
-      ]
-    });
+    function buildFallbackReport() {
+      const toLower = (value) => String(value || "").toLowerCase();
+      const findAnswer = (key) =>
+        answers.find((item) => String(item.question || "").toLowerCase().includes(key));
+      const industry = (findAnswer("business") || {}).answer || "unknown";
+      const teamSize = (findAnswer("team") || {}).answer || "unknown";
+      const painPoints = (findAnswer("bottleneck") || {}).answer || "unknown";
+      const tools = (findAnswer("tools") || {}).answer || "unknown";
+      const goals = (findAnswer("outcome") || {}).answer || "unknown";
+      const timeline = (findAnswer("timeline") || {}).answer || "unknown";
+      const budget = (findAnswer("budget") || {}).answer || "unknown";
 
-    const raw = response.output_text?.trim();
-    if (!raw) {
-      return res.status(500).json({ error: "Empty model response." });
+      const recommended = new Set(["AI Strategy Assessment"]);
+      const pain = toLower(painPoints);
+      const goal = toLower(goals);
+      const tool = toLower(tools);
+
+      if (pain.includes("manual") || pain.includes("spreadsheet") || tool.includes("crm")) {
+        recommended.add("AI Integration");
+      }
+      if (goal.includes("automate") || pain.includes("repetitive") || pain.includes("admin")) {
+        recommended.add("Custom AI Development");
+      }
+      if (goal.includes("training") || pain.includes("adoption")) {
+        recommended.add("AI Training & Enablement");
+      }
+      if (goal.includes("support") || pain.includes("maintenance")) {
+        recommended.add("Ongoing AI Support");
+      }
+
+      const summary =
+        `Based on your input, we see near-term opportunities to reduce ` +
+        `friction in ${industry} workflows and deliver measurable wins within ` +
+        `your ${timeline} timeline. Our focus would be an assessment to pinpoint ` +
+        `quick ROI, then implement one high-impact workflow tied to your goals.`;
+
+      return {
+        summary,
+        extracted: {
+          industry,
+          team_size: teamSize,
+          pain_points: painPoints,
+          tools,
+          goals,
+          timeline,
+          budget
+        },
+        recommended_services: Array.from(recommended),
+        suggested_next_step:
+          "Book a call to map the assessment and a 90-day execution plan."
+      };
     }
 
     let parsed;
     try {
-      parsed = JSON.parse(raw);
-    } catch (parseError) {
-      console.error("Walkthrough JSON parse error:", parseError);
-      return res.status(500).json({ error: "Invalid model response." });
+      const response = await openai.responses.create({
+        model,
+        input: [
+          {
+            role: "system",
+            content: [{ type: "input_text", text: systemPrompt }]
+          },
+          {
+            role: "user",
+            content: [
+              {
+                type: "input_text",
+                text: JSON.stringify({ answers })
+              }
+            ]
+          }
+        ]
+      });
+
+      const raw = response.output_text?.trim();
+      if (!raw) {
+        throw new Error("Empty model response.");
+      }
+
+      try {
+        parsed = JSON.parse(raw);
+      } catch (parseError) {
+        const match = raw.match(/\{[\s\S]*\}/);
+        if (!match) {
+          throw parseError;
+        }
+        parsed = JSON.parse(match[0]);
+      }
+    } catch (modelError) {
+      console.error("Walkthrough model error:", modelError?.message || modelError);
+      parsed = buildFallbackReport();
     }
 
     const emailSubject = "Your AI Walkthrough Summary";
