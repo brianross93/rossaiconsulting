@@ -90,10 +90,6 @@ app.post("/api/chat", async (req, res) => {
 
 app.post("/api/schedule", async (req, res) => {
   try {
-    if (!calendlyToken) {
-      return res.status(500).json({ error: "Missing CALENDLY_API." });
-    }
-
     const name = String(req.body?.name || "").trim();
     const email = String(req.body?.email || "").trim();
     const company = String(req.body?.company || "").trim();
@@ -102,6 +98,26 @@ app.post("/api/schedule", async (req, res) => {
 
     if (!name || !email || !goals || !times) {
       return res.status(400).json({ error: "Missing required fields." });
+    }
+
+    const bodyLines = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      company ? `Company: ${company}` : "Company: (not provided)",
+      `Goals: ${goals}`,
+      `Preferred times: ${times}`
+    ];
+    const subject = encodeURIComponent("AI intro call scheduling request");
+    const body = encodeURIComponent(bodyLines.join("\n"));
+    const mailto = `mailto:hello@rossapplied.ai?subject=${subject}&body=${body}`;
+
+    if (!calendlyToken) {
+      return res.json({
+        schedulingUrl: "https://rossapplied.ai/book-call/",
+        mailto,
+        summary:
+          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
+      });
     }
 
     const headers = {
@@ -137,17 +153,6 @@ app.post("/api/schedule", async (req, res) => {
     );
     const selected = preferred || eventTypes[0];
     const schedulingUrl = selected?.scheduling_url || selected?.uri || "https://calendly.com";
-
-    const bodyLines = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      company ? `Company: ${company}` : "Company: (not provided)",
-      `Goals: ${goals}`,
-      `Preferred times: ${times}`
-    ];
-    const subject = encodeURIComponent("AI intro call scheduling request");
-    const body = encodeURIComponent(bodyLines.join("\n"));
-    const mailto = `mailto:hello@rossapplied.ai?subject=${subject}&body=${body}`;
 
     res.json({
       schedulingUrl,
