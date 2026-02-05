@@ -791,3 +791,299 @@ body.walkthrough-page {
      display: none;
    }
  }
+
+/* Walkthrough v2 cinematic overrides */
+.walkthrough-page {
+  --walkthrough-bg: #04070f;
+  --walkthrough-surface: rgba(9, 16, 34, 0.72);
+  --walkthrough-border: rgba(125, 211, 252, 0.18);
+  --walkthrough-text: #e7edf7;
+  --walkthrough-muted: rgba(231, 237, 247, 0.68);
+  --walkthrough-accent: #47b9ff;
+  --walkthrough-accent-2: #6ef2d8;
+  --walkthrough-scroll: 0;
+  background: radial-gradient(circle at 20% -10%, #0a1736 0%, var(--walkthrough-bg) 58%);
+  color: var(--walkthrough-text);
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+}
+
+.walkthrough-page .nav {
+  background: rgba(5, 8, 15, 0.75);
+  border-bottom: 1px solid rgba(125, 211, 252, 0.16);
+}
+
+.walkthrough-page .logo,
+.walkthrough-page .nav-links,
+.walkthrough-page .nav-links a,
+.walkthrough-page .nav-links a:hover,
+.walkthrough-page .nav-links a:focus {
+  color: #dce6f7;
+}
+
+.walkthrough-page h1,
+.walkthrough-page h2,
+.walkthrough-page h3,
+.walkthrough-page h4,
+.walkthrough-page .walkthrough-question {
+  font-family: "Space Grotesk", "IBM Plex Sans", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.walkthrough-cinematic {
+  min-height: 56vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.walkthrough-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.layer-grid {
+  background-image: linear-gradient(rgba(71, 185, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(71, 185, 255, 0.08) 1px, transparent 1px);
+  background-size: 72px 72px;
+  opacity: 0.32;
+  transform: translateY(calc(var(--walkthrough-scroll) * -0.04px));
+}
+
+.layer-glow {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(71, 185, 255, 0.22), transparent 36%),
+    radial-gradient(circle at 86% 10%, rgba(110, 242, 216, 0.2), transparent 34%),
+    radial-gradient(circle at 40% 80%, rgba(71, 185, 255, 0.1), transparent 40%);
+  transform: translateY(calc(var(--walkthrough-scroll) * -0.09px));
+}
+
+.walkthrough-title {
+  max-width: 15ch;
+  font-size: clamp(2.1rem, 6vw, 4.2rem);
+  line-height: 1.04;
+  margin-bottom: 10px;
+}
+
+.walkthrough-page .walkthrough-hero .lead {
+  max-width: 48ch;
+  color: var(--walkthrough-muted);
+  font-size: 1.15rem;
+  margin-bottom: 0;
+}
+
+.story-strip {
+  padding: 24px 0 6px;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(180px, 1fr));
+  gap: 18px;
+}
+
+.story-card {
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(7, 15, 32, 0.76), rgba(5, 10, 21, 0.5));
+  border: 1px solid var(--walkthrough-border);
+  box-shadow: 0 18px 40px rgba(4, 8, 16, 0.55);
+}
+
+.story-card span {
+  color: #8bd7ff;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.story-card h3 {
+  margin-top: 10px;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.story-card p {
+  color: var(--walkthrough-muted);
+  font-size: 0.96rem;
+}
+
+.walkthrough-stage {
+  padding-top: 26px;
+}
+
+.walkthrough-layout {
+  gap: 28px;
+}
+
+.walkthrough-assistant {
+  position: sticky;
+  top: 94px;
+  align-self: start;
+}
+
+.walkthrough-page .assistant-card,
+.walkthrough-page .assistant-message,
+.walkthrough-page .walkthrough-card,
+.walkthrough-page .result-card {
+  background: var(--walkthrough-surface);
+  border-color: var(--walkthrough-border);
+  box-shadow: 0 24px 60px rgba(4, 8, 16, 0.66);
+}
+
+.walkthrough-page .assistant-message {
+  color: #dbe8ff;
+}
+
+.walkthrough-page .assistant-avatar {
+  border-color: rgba(110, 242, 216, 0.35);
+}
+
+.walkthrough-page .assistant-orb {
+  box-shadow: 0 0 24px rgba(71, 185, 255, 0.55);
+}
+
+.walkthrough-page .assistant-glow {
+  animation: orbit 5s linear infinite;
+}
+
+.walkthrough-page .walkthrough-input input {
+  min-height: 52px;
+  border-color: rgba(125, 211, 252, 0.4);
+  color: #f1f6ff;
+}
+
+.walkthrough-page .walkthrough-input input:focus {
+  outline: none;
+  border-color: rgba(110, 242, 216, 0.75);
+  box-shadow: 0 0 0 2px rgba(71, 185, 255, 0.24), inset 0 0 0 1px rgba(71, 185, 255, 0.2);
+}
+
+.walkthrough-page .button {
+  color: #fff;
+}
+
+.walkthrough-page .button.ghost {
+  color: #eef4ff;
+}
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip-option {
+  border: 1px solid rgba(125, 211, 252, 0.35);
+  color: #cae8ff;
+  background: rgba(71, 185, 255, 0.08);
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+}
+
+.chip-option:hover,
+.chip-option:focus {
+  transform: translateY(-1px);
+  border-color: rgba(110, 242, 216, 0.7);
+  background: rgba(110, 242, 216, 0.12);
+}
+
+.transition-in {
+  animation: slide-card 0.26s ease;
+}
+
+.result-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(71, 185, 255, 0.17);
+  border: 1px solid rgba(125, 211, 252, 0.35);
+  color: #dff2ff;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.report-header,
+.report-grid,
+.timeline,
+.result-cta,
+.reveal-step {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: stage-in 0.45s ease forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.06s;
+}
+
+.delay-2 {
+  animation-delay: 0.12s;
+}
+
+.delay-3 {
+  animation-delay: 0.18s;
+}
+
+.delay-4 {
+  animation-delay: 0.24s;
+}
+
+.delay-5 {
+  animation-delay: 0.3s;
+}
+
+.delay-6 {
+  animation-delay: 0.36s;
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.reveal-on-scroll.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.walkthrough-page.report-ready .walkthrough-card {
+  border-color: rgba(110, 242, 216, 0.46);
+}
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-card {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 980px) {
+  .story-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .walkthrough-assistant {
+    position: static;
+  }
+}

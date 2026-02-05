@@ -9,13 +9,13 @@
       content="Interactive AI walkthrough that maps your business goals to Ross Applied AI services."
     />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#1e3a5f" />
+    <meta name="theme-color" content="#0b1020" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -34,20 +34,43 @@
       </div>
     </header>
 
-    <section class="walkthrough-hero">
+    <section class="walkthrough-hero walkthrough-cinematic">
+      <div class="walkthrough-layer layer-grid"></div>
+      <div class="walkthrough-layer layer-glow"></div>
       <div class="container">
-        <div class="eyebrow">Interactive Walkthrough</div>
-        <h1>AI Opportunity Walkthrough</h1>
-        <p class="lead">
-          Answer a few questions. Get a tailored, high‑level plan in under
-          2 minutes.
+        <div class="eyebrow reveal-on-scroll">Interactive Walkthrough</div>
+        <h1 class="walkthrough-title reveal-on-scroll">
+          AI Opportunity Walkthrough
+        </h1>
+        <p class="lead reveal-on-scroll">
+          Answer a few questions. Get a tailored, high-level plan in under 2 minutes.
         </p>
       </div>
     </section>
 
-    <section class="section">
+    <section class="story-strip">
+      <div class="container story-grid">
+        <article class="story-card reveal-on-scroll">
+          <span>01</span>
+          <h3>Business Context</h3>
+          <p>Capture your workflow, constraints, and goals in a focused sequence.</p>
+        </article>
+        <article class="story-card reveal-on-scroll">
+          <span>02</span>
+          <h3>AI Diagnosis</h3>
+          <p>Convert inputs into clear implementation opportunities and risk-aware priorities.</p>
+        </article>
+        <article class="story-card reveal-on-scroll">
+          <span>03</span>
+          <h3>Action Plan</h3>
+          <p>Generate a concise, executive-friendly report and immediate next step.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section walkthrough-stage" id="quizStage">
       <div class="container walkthrough-layout">
-        <div class="walkthrough-assistant">
+        <aside class="walkthrough-assistant">
           <div class="assistant-card">
             <div class="assistant-avatar">
               <div class="assistant-orb"></div>
@@ -56,12 +79,12 @@
             <div>
               <div class="assistant-title">AI Guide</div>
               <div class="assistant-subtitle">
-                I’ll ask a few questions and build a tailored plan.
+                One question at a time. We keep this concise.
               </div>
             </div>
           </div>
           <div class="assistant-message" id="assistantMessage">
-            Ready when you are. Let’s start with the basics.
+            Ready when you are. Lets start with the basics.
           </div>
           <div class="assistant-progress">
             <div class="progress-ring">
@@ -69,13 +92,13 @@
                 <circle class="progress-track" cx="60" cy="60" r="52"></circle>
                 <circle class="progress-stroke" cx="60" cy="60" r="52"></circle>
               </svg>
-              <div class="progress-label" id="progressText">1/7</div>
+              <div class="progress-label" id="progressText">1/8</div>
             </div>
             <span class="progress-caption">Progress</span>
           </div>
-        </div>
+        </aside>
 
-        <div class="walkthrough-card">
+        <div class="walkthrough-card" id="walkthroughCard">
           <div class="walkthrough-question" id="questionText"></div>
           <div class="walkthrough-input">
             <input
@@ -86,13 +109,10 @@
             />
             <button class="button" id="nextButton" type="button">Next</button>
           </div>
+          <div class="chip-row" id="chipRow"></div>
           <div class="walkthrough-actions">
-            <button class="button ghost" id="backButton" type="button">
-              Back
-            </button>
-            <button class="button ghost" id="restartButton" type="button">
-              Restart
-            </button>
+            <button class="button ghost" id="backButton" type="button">Back</button>
+            <button class="button ghost" id="restartButton" type="button">Restart</button>
           </div>
           <div class="walkthrough-status" id="statusText"></div>
           <div class="walkthrough-results" id="results"></div>
@@ -105,11 +125,13 @@
         var questions = [
           {
             key: "industry",
-            prompt: "What type of business are you in?"
+            prompt: "What type of business are you in?",
+            chips: ["Professional services", "Healthcare", "Real estate", "Construction"]
           },
           {
             key: "team_size",
-            prompt: "Roughly how big is your team?"
+            prompt: "Roughly how big is your team?",
+            chips: ["1-5", "6-15", "16-50", "50+"]
           },
           {
             key: "email",
@@ -117,7 +139,8 @@
           },
           {
             key: "pain_points",
-            prompt: "What’s the biggest operational bottleneck right now?"
+            prompt: "Whats the biggest operational bottleneck right now?",
+            chips: ["Manual admin", "Slow response time", "Data scattered", "Lead follow-up"]
           },
           {
             key: "tools",
@@ -125,15 +148,18 @@
           },
           {
             key: "goals",
-            prompt: "What outcome do you want AI to deliver in the next 90 days?"
+            prompt: "What outcome do you want AI to deliver in the next 90 days?",
+            chips: ["Save time", "Increase revenue", "Improve quality", "Reduce cost"]
           },
           {
             key: "timeline",
-            prompt: "How urgent is this? (ASAP, 30 days, 60 days, 90+ days)"
+            prompt: "How urgent is this? (ASAP, 30 days, 60 days, 90+ days)",
+            chips: ["ASAP", "30 days", "60 days", "90+ days"]
           },
           {
             key: "budget",
-            prompt: "Do you have a budget range in mind?"
+            prompt: "Do you have a budget range in mind?",
+            chips: ["Under $2k", "$2k-$5k", "$5k-$15k", "$15k+"]
           }
         ];
 
@@ -149,7 +175,8 @@
         var results = document.getElementById("results");
         var assistantMessage = document.getElementById("assistantMessage");
         var progressText = document.getElementById("progressText");
-        var progressFill = document.getElementById("progressFill");
+        var chipRow = document.getElementById("chipRow");
+        var walkthroughCard = document.getElementById("walkthroughCard");
 
         function updateProgress() {
           var step = currentIndex + 1;
@@ -162,18 +189,6 @@
             stroke.style.strokeDasharray = circumference;
             stroke.style.strokeDashoffset = offset;
           }
-        }
-
-        function showQuestion() {
-          var current = questions[currentIndex];
-          questionText.textContent = current.prompt;
-          answerInput.value = answers[current.key] || "";
-          statusText.textContent = "";
-          results.innerHTML = "";
-          assistantMessage.textContent =
-            "Tell me about your " + current.key.replace("_", " ") + ".";
-          updateProgress();
-          backButton.disabled = currentIndex === 0;
         }
 
         function isValidEmail(value) {
@@ -202,23 +217,54 @@
         }
 
         function buildClientFallback() {
-          var industry = answers.industry || "your industry";
           var goals = answers.goals || "your goals";
           var urgency = answers.timeline || "your timeline";
           var summary =
             "Based on what you shared, there are clear opportunities to apply AI " +
             "to reduce friction and deliver measurable progress toward " + goals + ". " +
             "We recommend starting with a focused assessment, then implementing " +
-            "one high‑impact workflow aligned to " + urgency + ".";
+            "one high-impact workflow aligned to " + urgency + ".";
           return {
             summary: summary,
-            recommended_services: [
-              "AI Strategy Assessment",
-              "AI Integration"
-            ],
+            recommended_services: ["AI Strategy Assessment", "AI Integration"],
             suggested_next_step:
-              "Book a call to map the assessment and a 90‑day execution plan."
+              "Book a call to map the assessment and a 90-day execution plan."
           };
+        }
+
+        function renderChips(question) {
+          chipRow.innerHTML = "";
+          if (!question.chips || !question.chips.length) {
+            return;
+          }
+          question.chips.forEach(function (chipValue) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "chip-option";
+            btn.textContent = chipValue;
+            btn.addEventListener("click", function () {
+              answerInput.value = chipValue;
+              nextButton.click();
+            });
+            chipRow.appendChild(btn);
+          });
+        }
+
+        function showQuestion() {
+          var current = questions[currentIndex];
+          walkthroughCard.classList.remove("transition-in");
+          void walkthroughCard.offsetWidth;
+          walkthroughCard.classList.add("transition-in");
+          questionText.textContent = current.prompt;
+          answerInput.value = answers[current.key] || "";
+          statusText.textContent = "";
+          results.innerHTML = "";
+          assistantMessage.textContent =
+            "Tell me about your " + current.key.replace("_", " ") + ".";
+          renderChips(current);
+          updateProgress();
+          backButton.disabled = currentIndex === 0;
+          answerInput.focus();
         }
 
         function renderResults(data) {
@@ -229,56 +275,51 @@
           var emailError = data.email_error ? String(data.email_error) : "";
           var servicesHtml = services
             .map(function (service) {
-              return '<span class="pill">' + service + "</span>";
+              return '<span class="result-chip">' + service + "</span>";
             })
             .join(" ");
           var emailBadge = emailedTo
-            ? '<div class="email-success">Email sent to ' + emailedTo + ".</div>"
+            ? '<div class="email-success reveal-step">Email sent to ' + emailedTo + ".</div>"
             : "";
           var emailWarning = emailError
-            ? '<div class="email-warning">We couldn’t send the email. You can still book a call.</div>'
+            ? '<div class="email-warning reveal-step">We could not send the email. You can still book a call.</div>'
             : "";
           var score = calculateScore();
-          results.innerHTML = ""
-            + '<div class="result-card">'
-            + emailBadge
-            + emailWarning
-            + '<div class="report-header">'
-            + '<div>'
-            + '<div class="report-kicker">AI Opportunity Score</div>'
-            + '<div class="report-score">' + score + '<span>/100</span></div>'
-            + "</div>"
-            + '<div class="report-pill">Tulsa Plains Signal</div>'
-            + "</div>"
-            + '<h3>Recommended trail</h3>'
-            + "<p>" + (data.summary || "Here’s a tailored recommendation.") + "</p>"
-            + '<div class="result-services">' + servicesHtml + "</div>"
-            + '<div class="report-grid">'
-            + '<div class="report-card">'
-            + "<h4>Why now</h4>"
-            + "<p>We see clear automation leverage in your current tools and pain points.</p>"
-            + "</div>"
-            + '<div class="report-card">'
-            + "<h4>90‑day win</h4>"
-            + "<p>Launch a focused workflow that saves time weekly and establishes ROI.</p>"
-            + "</div>"
-            + "</div>"
-            + '<div class="timeline">'
-            + '<div class="timeline-step"><span>Week 1</span><strong>Assessment</strong></div>'
-            + '<div class="timeline-step"><span>Week 2‑3</span><strong>Build</strong></div>'
-            + '<div class="timeline-step"><span>Week 4</span><strong>Launch</strong></div>'
-            + "</div>"
-            + "<p><strong>Next step:</strong> "
-            + (data.suggested_next_step || "Book a call to map the plan.")
-            + "</p>"
-            + (emailedTo
-              ? "<p><strong>Summary sent to:</strong> " + emailedTo + "</p>"
-              : "")
-            + '<div class="result-cta">'
-            + '<a class="button" href="/book-call/">Book a Call</a>'
-            + '<a class="button ghost" href="/contact/">Email Us</a>'
-            + "</div>"
-            + "</div>";
+
+          results.innerHTML =
+            '<div class="result-card">' +
+            emailBadge +
+            emailWarning +
+            '<div class="report-header reveal-step delay-1">' +
+            "<div>" +
+            '<div class="report-kicker">AI Opportunity Score</div>' +
+            '<div class="report-score">' + score + "<span>/100</span></div>" +
+            "</div>" +
+            '<div class="report-pill">Recommendation Ready</div>' +
+            "</div>" +
+            '<h3 class="reveal-step delay-2">Recommended path</h3>' +
+            '<p class="reveal-step delay-2">' + (data.summary || "Heres a tailored recommendation.") + "</p>" +
+            '<div class="result-services reveal-step delay-3">' + servicesHtml + "</div>" +
+            '<div class="report-grid reveal-step delay-4">' +
+            '<div class="report-card"><h4>Why now</h4><p>Your answers indicate immediate operational gains from targeted automation.</p></div>' +
+            '<div class="report-card"><h4>90-day plan</h4><p>Assessment, implementation, and launch in a phased timeline with measurable checkpoints.</p></div>' +
+            "</div>" +
+            '<div class="timeline reveal-step delay-5">' +
+            '<div class="timeline-step"><span>Week 1</span><strong>Assessment</strong></div>' +
+            '<div class="timeline-step"><span>Week 2-3</span><strong>Build</strong></div>' +
+            '<div class="timeline-step"><span>Week 4</span><strong>Launch</strong></div>' +
+            "</div>" +
+            '<p class="reveal-step delay-6"><strong>Next step:</strong> ' +
+            (data.suggested_next_step || "Book a call to map the plan.") +
+            "</p>" +
+            '<div class="result-cta reveal-step delay-6">' +
+            '<a class="button" href="/book-call/">Book a Call</a>' +
+            '<a class="button ghost" href="/contact/">Email Us</a>' +
+            "</div>" +
+            "</div>";
+
+          document.body.classList.add("report-ready");
+          results.scrollIntoView({ behavior: "smooth", block: "start" });
         }
 
         async function finish() {
@@ -297,17 +338,43 @@
             var data = await response.json();
             renderResults(data);
             assistantMessage.textContent =
-              "Here’s a high-level plan based on what you shared.";
+              "Report complete. You can now book your strategy call.";
           } catch (error) {
             var fallback = buildClientFallback();
             renderResults(fallback);
             assistantMessage.textContent =
-              "Here’s a quick plan based on your answers.";
+              "Report complete using fallback mode.";
           } finally {
             statusText.textContent = "";
             nextButton.disabled = false;
             backButton.disabled = false;
           }
+        }
+
+        function applyScrollEffects() {
+          var y = window.scrollY || 0;
+          document.documentElement.style.setProperty("--walkthrough-scroll", y);
+        }
+
+        function setupRevealObserver() {
+          var nodes = document.querySelectorAll(".reveal-on-scroll");
+          if (!("IntersectionObserver" in window) || !nodes.length) {
+            return;
+          }
+          var observer = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                  entry.target.classList.add("in-view");
+                  observer.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.2 }
+          );
+          nodes.forEach(function (node) {
+            observer.observe(node);
+          });
         }
 
         nextButton.addEventListener("click", function () {
@@ -343,6 +410,7 @@
         restartButton.addEventListener("click", function () {
           currentIndex = 0;
           answers = {};
+          document.body.classList.remove("report-ready");
           showQuestion();
         });
 
@@ -353,6 +421,9 @@
           }
         });
 
+        window.addEventListener("scroll", applyScrollEffects, { passive: true });
+        setupRevealObserver();
+        applyScrollEffects();
         showQuestion();
       })();
     </script>
