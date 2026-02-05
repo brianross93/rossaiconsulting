@@ -105,6 +105,10 @@
             prompt: "Roughly how big is your team?"
           },
           {
+            key: "email",
+            prompt: "Where should we send your walkthrough summary?"
+          },
+          {
             key: "pain_points",
             prompt: "What’s the biggest operational bottleneck right now?"
           },
@@ -159,6 +163,10 @@
           backButton.disabled = currentIndex === 0;
         }
 
+        function isValidEmail(value) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        }
+
         function collectAnswers() {
           return questions.map(function (q) {
             return {
@@ -172,6 +180,7 @@
           var services = Array.isArray(data.recommended_services)
             ? data.recommended_services
             : [];
+          var emailedTo = data.emailed_to ? String(data.emailed_to) : "";
           var servicesHtml = services
             .map(function (service) {
               return '<span class="pill">' + service + "</span>";
@@ -185,6 +194,9 @@
             + "<p><strong>Next step:</strong> "
             + (data.suggested_next_step || "Book a call to map the plan.")
             + "</p>"
+            + (emailedTo
+              ? "<p><strong>Summary sent to:</strong> " + emailedTo + "</p>"
+              : "")
             + '<div class="result-cta">'
             + '<a class="button" href="/book-call/">Book a Call</a>'
             + '<a class="button ghost" href="/contact/">Email Us</a>'
@@ -228,6 +240,10 @@
           var value = answerInput.value.trim();
           if (!value) {
             statusText.textContent = "Please add a quick answer to continue.";
+            return;
+          }
+          if (current.key === "email" && !isValidEmail(value)) {
+            statusText.textContent = "Please enter a valid email address.";
             return;
           }
           answers[current.key] = value;

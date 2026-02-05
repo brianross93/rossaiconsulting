@@ -3,6 +3,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
 import OpenAI from "openai";
+import crypto from "crypto";
 
 dotenv.config();
 
@@ -14,6 +15,31 @@ const model = "gpt-5-mini";
 const openai = apiKey ? new OpenAI({ apiKey }) : null;
 const calendlyToken = process.env.CALENDLY_API;
 const calendlySchedulingUrl = process.env.CALENDLY_SCHEDULING_URL;
+const resendApiKey = process.env.RESEND_API_KEY;
+const resendFromEmail = process.env.RESEND_FROM_EMAIL || "hello@rossapplied.ai";
+
+async function sendResendEmail({ to, subject, html, text }) {
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${resendApiKey}`,
+      "Idempotency-Key": crypto.randomUUID()
+    },
+    body: JSON.stringify({
+      from: resendFromEmail,
+      to,
+      subject,
+      html,
+      text
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Resend error: ${response.status} ${errorText}`);
+  }
+}
 
 app.set("trust proxy", true);
 app.use(express.json({ limit: "20kb" }));
@@ -160,11 +186,20 @@ app.post("/api/walkthrough", async (req, res) => {
     if (!openai) {
       return res.status(500).json({ error: "Missing OPEN_AI_KEY." });
     }
+    if (!resendApiKey) {
+      return res.status(500).json({ error: "Missing RESEND_API_KEY." });
+    }
 
     const payload = req.body || {};
     const answers = Array.isArray(payload.answers) ? payload.answers : [];
     if (answers.length === 0) {
       return res.status(400).json({ error: "Answers are required." });
+    }
+
+    const emailEntry = answers.find((item) => item.question && item.answer && String(item.question).toLowerCase().includes("email"));
+    const userEmail = emailEntry ? String(emailEntry.answer).trim() : "";
+    if (!userEmail) {
+      return res.status(400).json({ error: "Email is required." });
     }
 
     const systemPrompt = [
@@ -225,7 +260,64 @@ app.post("/api/walkthrough", async (req, res) => {
       return res.status(500).json({ error: "Invalid model response." });
     }
 
-    res.json(parsed);
+    const emailSubject = "Your AI Walkthrough Summary";
+    const services = Array.isArray(parsed.recommended_services)
+      ? parsed.recommended_services
+      : [];
+    const servicesList = services.length ? services.join(", ") : "To be discussed";
+    const extracted = parsed.extracted || {};
+    const summaryText = parsed.summary || "Thanks for completing the walkthrough.";
+    const suggestedNext = parsed.suggested_next_step || "Book a call to map the plan.";
+
+    const html = `
+      <div style="font-family: Arial, sans-serif; color: #0f172a;">
+        <h2>AI Walkthrough Summary</h2>
+        <p>${summaryText}</p>
+        <h3>Recommended Services</h3>
+        <p>${servicesList}</p>
+        <h3>Key Details</h3>
+        <ul>
+          <li><strong>Industry:</strong> ${extracted.industry || "unknown"}</li>
+          <li><strong>Team size:</strong> ${extracted.team_size || "unknown"}</li>
+          <li><strong>Pain points:</strong> ${extracted.pain_points || "unknown"}</li>
+          <li><strong>Tools:</strong> ${extracted.tools || "unknown"}</li>
+          <li><strong>Goals:</strong> ${extracted.goals || "unknown"}</li>
+          <li><strong>Timeline:</strong> ${extracted.timeline || "unknown"}</li>
+          <li><strong>Budget:</strong> ${extracted.budget || "unknown"}</li>
+        </ul>
+        <p><strong>Next step:</strong> ${suggestedNext}</p>
+        <p><a href="https://rossapplied.ai/book-call/">Book a call</a></p>
+      </div>
+    `;
+
+    const text = [
+      "AI Walkthrough Summary",
+      summaryText,
+      "",
+      "Recommended Services: " + servicesList,
+      "Industry: " + (extracted.industry || "unknown"),
+      "Team size: " + (extracted.team_size || "unknown"),
+      "Pain points: " + (extracted.pain_points || "unknown"),
+      "Tools: " + (extracted.tools || "unknown"),
+      "Goals: " + (extracted.goals || "unknown"),
+      "Timeline: " + (extracted.timeline || "unknown"),
+      "Budget: " + (extracted.budget || "unknown"),
+      "Next step: " + suggestedNext,
+      "Book a call: https://rossapplied.ai/book-call/"
+    ].join("\n");
+
+    const recipients = [userEmail, "hello@rossapplied.ai"];
+    await sendResendEmail({
+      to: recipients,
+      subject: emailSubject,
+      html,
+      text
+    });
+
+    res.json({
+      ...parsed,
+      emailed_to: userEmail
+    });
   } catch (error) {
     const message = error?.message || "Walkthrough service error.";
     console.error("Walkthrough error:", message);
