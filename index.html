@@ -393,7 +393,13 @@
         var input = document.getElementById("chatbotInput");
         var actions = panel.querySelectorAll("[data-prompt]");
         var inFlight = false;
-        var scheduler = { active: false, step: 0, data: {} };
+        var scheduler = {
+          active: false,
+          step: 0,
+          data: {},
+          suggestions: [],
+          eventTypeUri: ""
+        };
 
         function addMessage(text, who) {
           var bubble = document.createElement("div");
@@ -408,43 +414,32 @@
           scheduler.active = true;
           scheduler.step = 0;
           scheduler.data = {};
+          scheduler.suggestions = [];
+          scheduler.eventTypeUri = "";
           addMessage(
             "Great — I’ll collect a few details to schedule your intro call. What’s your name?",
             "bot"
           );
         }
 
-        async function submitScheduler() {
-          try {
-            var response = await fetch("/api/schedule", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(scheduler.data)
-            });
-            if (!response.ok) {
-              throw new Error("Schedule request failed");
-            }
-            var data = await response.json();
-            addMessage(data.summary || "Thanks! We will follow up soon.", "bot");
-            if (data.schedulingUrl) {
-              addMessage(
-                "Book your intro call here: " + data.schedulingUrl,
-                "bot"
-              );
-            }
-            addMessage(
-              "Prefer email? Write to hello@rossapplied.ai and include your goals and a few times that work.",
-              "bot"
-            );
-          } catch (error) {
-            addMessage(
-              "Sorry, scheduling failed. You can email hello@rossapplied.ai or book at https://rossapplied.ai/book-call/.",
-              "bot"
-            );
-          } finally {
-            scheduler.active = false;
-            scheduler.step = 0;
-          }
+        function submitScheduler() {
+          addMessage(
+            "Thanks! You can book your intro call here:",
+            "bot"
+          );
+          addMessage("https://rossapplied.ai/book-call/", "bot");
+          addMessage(
+            "Prefer email? Write to hello@rossapplied.ai and include your goals and a few times that work.",
+            "bot"
+          );
+          scheduler.active = false;
+          scheduler.step = 0;
+          scheduler.suggestions = [];
+          scheduler.eventTypeUri = "";
+        }
+
+        function confirmScheduler() {
+          submitScheduler();
         }
 
         function handleSchedulerInput(text) {
