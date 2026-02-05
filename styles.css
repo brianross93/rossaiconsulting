@@ -79,31 +79,41 @@ body.walkthrough-page {
    color: var(--color-primary);
  }
  
- .button {
-   display: inline-flex;
-   align-items: center;
-   justify-content: center;
-   padding: 12px 22px;
-   border-radius: 999px;
-   background: var(--color-accent);
-   color: #fff;
-   font-weight: 600;
-   border: none;
-   transition: transform 0.2s ease, box-shadow 0.2s ease;
-   box-shadow: 0 12px 24px rgba(231, 111, 81, 0.2);
- }
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 600;
+  border: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 24px rgba(231, 111, 81, 0.2);
+}
  
  .button.secondary {
    background: var(--color-secondary);
    box-shadow: 0 12px 24px rgba(42, 157, 143, 0.2);
  }
  
- .button.ghost {
-   background: transparent;
-   color: var(--color-primary);
-   border: 1px solid #cbd5f5;
-   box-shadow: none;
- }
+.button.ghost {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid #cbd5f5;
+  box-shadow: none;
+}
+
+.walkthrough-page .button {
+  color: #fff;
+}
+
+.walkthrough-page .button.ghost {
+  color: #fff;
+  border-color: rgba(248, 250, 252, 0.35);
+  background: rgba(15, 23, 42, 0.2);
+}
  
  .button:hover,
  .button:focus {
