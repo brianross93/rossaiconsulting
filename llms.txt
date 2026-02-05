@@ -5,7 +5,7 @@ Summary
 Ross Applied AI Consulting is a Tulsa-based AI consulting firm focused on practical, measurable business outcomes. We help businesses assess AI opportunities, integrate proven tools, train teams, and provide ongoing optimization. We also deliver AI talks and workshops.
 
 Service Area
-Tulsa, OK and surrounding areas (Broken Arrow, Owasso, etc.).
+Tulsa, OK, OKC, and the greater Oklahoma area.
 
 Core Services
 - AI Strategy Assessment
@@ -19,7 +19,7 @@ Positioning
 Business-first AI transformation, not a Silicon Valley dev shop. Focus on results, ROI, and adoption for real-world teams.
 
 Pricing (public guidance)
-- Starter: $2,500 (1-day assessment + recommendations)
+- Starter: $1,750 (1-day assessment + recommendations)
 - Growth: $7,500 (implementation + training)
 - Enterprise: $20,000+ (custom development)
 - Retainer: $1,500/month
