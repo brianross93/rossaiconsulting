@@ -37,10 +37,10 @@
     <section class="walkthrough-hero">
       <div class="container">
         <div class="eyebrow">Interactive Walkthrough</div>
-        <h1>Midnight AI Trail Guide for Modern Business</h1>
+        <h1>AI Opportunity Walkthrough</h1>
         <p class="lead">
-          Ride through a short set of questions. We’ll map your goals to the
-          best‑fit Ross Applied AI services and deliver a polished mini‑report.
+          Answer a few questions. Get a tailored, high‑level plan in under
+          2 minutes.
         </p>
       </div>
     </section>
@@ -50,31 +50,13 @@
         <div class="walkthrough-assistant">
           <div class="assistant-card">
             <div class="assistant-avatar">
-              <span class="assistant-badge">RC.AI</span>
-              <svg
-                class="assistant-icon"
-                viewBox="0 0 120 120"
-                role="img"
-                aria-label="Cowboy robot"
-              >
-                <defs>
-                  <linearGradient id="visor" x1="0" x2="1">
-                    <stop offset="0%" stop-color="#22d3ee" />
-                    <stop offset="100%" stop-color="#f97316" />
-                  </linearGradient>
-                </defs>
-                <rect x="18" y="50" width="84" height="46" rx="16" fill="#0f172a" stroke="#f97316" stroke-width="4"/>
-                <rect x="30" y="60" width="60" height="18" rx="9" fill="url(#visor)"/>
-                <rect x="28" y="32" width="64" height="18" rx="9" fill="#0f172a" stroke="#f97316" stroke-width="4"/>
-                <path d="M18 44 C30 20, 90 20, 102 44" fill="#0f172a" stroke="#f97316" stroke-width="4"/>
-                <circle cx="44" cy="88" r="4" fill="#f97316"/>
-                <circle cx="76" cy="88" r="4" fill="#f97316"/>
-              </svg>
+              <div class="assistant-orb"></div>
+              <div class="assistant-glow"></div>
             </div>
             <div>
-              <div class="assistant-title">Cowbot Trail Guide</div>
+              <div class="assistant-title">AI Guide</div>
               <div class="assistant-subtitle">
-                I’ll ask a few questions and forge a tailored AI plan.
+                I’ll ask a few questions and build a tailored plan.
               </div>
             </div>
           </div>
@@ -82,10 +64,14 @@
             Ready when you are. Let’s start with the basics.
           </div>
           <div class="assistant-progress">
-            <span id="progressText">Step 1 of 7</span>
-            <div class="progress-bar">
-              <div class="progress-fill" id="progressFill"></div>
+            <div class="progress-ring">
+              <svg viewBox="0 0 120 120">
+                <circle class="progress-track" cx="60" cy="60" r="52"></circle>
+                <circle class="progress-stroke" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <div class="progress-label" id="progressText">1/7</div>
             </div>
+            <span class="progress-caption">Progress</span>
           </div>
         </div>
 
@@ -167,9 +153,15 @@
 
         function updateProgress() {
           var step = currentIndex + 1;
-          progressText.textContent = "Step " + step + " of " + questions.length;
+          progressText.textContent = step + "/" + questions.length;
           var percent = Math.round((step / questions.length) * 100);
-          progressFill.style.width = percent + "%";
+          var stroke = document.querySelector(".progress-stroke");
+          if (stroke) {
+            var circumference = 2 * Math.PI * 52;
+            var offset = circumference - (percent / 100) * circumference;
+            stroke.style.strokeDasharray = circumference;
+            stroke.style.strokeDashoffset = offset;
+          }
         }
 
         function showQuestion() {
