@@ -367,7 +367,7 @@
       <div class="chatbot-actions">
         <button type="button" data-prompt="What services do you offer?">Services</button>
         <button type="button" data-prompt="What is pricing?">Pricing</button>
-        <button type="button" data-prompt="How do I book a call?">Book a call</button>
+        <button type="button" data-prompt="I want to schedule a call">Schedule</button>
       </div>
       <form class="chatbot-form" id="chatbotForm">
         <input
@@ -392,6 +392,7 @@
         var input = document.getElementById("chatbotInput");
         var actions = panel.querySelectorAll("[data-prompt]");
         var inFlight = false;
+        var scheduler = { active: false, step: 0, data: {} };
 
         function addMessage(text, who) {
           var bubble = document.createElement("div");
@@ -400,6 +401,84 @@
           messages.appendChild(bubble);
           messages.scrollTop = messages.scrollHeight;
           return bubble;
+        }
+
+        function startScheduler() {
+          scheduler.active = true;
+          scheduler.step = 0;
+          scheduler.data = {};
+          addMessage(
+            "Great — I’ll collect a few details to schedule your intro call. What’s your name?",
+            "bot"
+          );
+        }
+
+        async function submitScheduler() {
+          try {
+            var response = await fetch("/api/schedule", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(scheduler.data)
+            });
+            if (!response.ok) {
+              throw new Error("Schedule request failed");
+            }
+            var data = await response.json();
+            addMessage(data.summary || "Thanks! We will follow up soon.", "bot");
+            if (data.schedulingUrl) {
+              addMessage(
+                "Schedule here: " + data.schedulingUrl,
+                "bot"
+              );
+            }
+            if (data.mailto) {
+              addMessage("Backup email option: " + data.mailto, "bot");
+            }
+          } catch (error) {
+            addMessage(
+              "Sorry, scheduling failed. You can email hello@rossapplied.ai or book at https://rossapplied.ai/book-call/.",
+              "bot"
+            );
+          } finally {
+            scheduler.active = false;
+            scheduler.step = 0;
+          }
+        }
+
+        function handleSchedulerInput(text) {
+          if (scheduler.step === 0) {
+            scheduler.data.name = text;
+            scheduler.step = 1;
+            addMessage("Thanks! What’s the best email to reach you?", "bot");
+            return true;
+          }
+          if (scheduler.step === 1) {
+            scheduler.data.email = text;
+            scheduler.step = 2;
+            addMessage("Company name? (You can say “skip”)", "bot");
+            return true;
+          }
+          if (scheduler.step === 2) {
+            scheduler.data.company = text.toLowerCase() === "skip" ? "" : text;
+            scheduler.step = 3;
+            addMessage("Briefly, what are your AI goals?", "bot");
+            return true;
+          }
+          if (scheduler.step === 3) {
+            scheduler.data.goals = text;
+            scheduler.step = 4;
+            addMessage(
+              "What times work best? Include timezone and 2–3 options.",
+              "bot"
+            );
+            return true;
+          }
+          if (scheduler.step === 4) {
+            scheduler.data.times = text;
+            submitScheduler();
+            return true;
+          }
+          return false;
         }
 
         async function sendMessage(text) {
@@ -437,9 +516,14 @@
         actions.forEach(function (button) {
           button.addEventListener("click", function () {
             var prompt = button.getAttribute("data-prompt");
-            if (prompt) {
-              sendMessage(prompt);
+            if (!prompt) {
+              return;
             }
+            if (prompt.toLowerCase().includes("schedule")) {
+              startScheduler();
+              return;
+            }
+            sendMessage(prompt);
           });
         });
 
@@ -450,6 +534,20 @@
             return;
           }
           input.value = "";
+          if (scheduler.active) {
+            addMessage(value, "user");
+            handleSchedulerInput(value);
+            return;
+          }
+          if (
+            value.toLowerCase().includes("schedule") ||
+            value.toLowerCase().includes("book") ||
+            value.toLowerCase().includes("meeting")
+          ) {
+            addMessage(value, "user");
+            startScheduler();
+            return;
+          }
           sendMessage(value);
         });
       })();
