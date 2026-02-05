@@ -18,12 +18,17 @@
    padding: 0;
  }
  
- body {
-   font-family: "Inter", "Source Sans Pro", system-ui, -apple-system, sans-serif;
-   color: var(--color-ink);
-   background: #ffffff;
-   line-height: 1.6;
- }
+body {
+  font-family: "Inter", "Source Sans Pro", system-ui, -apple-system, sans-serif;
+  color: var(--color-ink);
+  background: #ffffff;
+  line-height: 1.6;
+}
+
+body.walkthrough-page {
+  background: radial-gradient(circle at top, #0b1020 0%, #05070d 60%);
+  color: #f8fafc;
+}
  
  img {
    max-width: 100%;
@@ -230,12 +235,31 @@
 
 .walkthrough-hero {
   padding: 70px 0 40px;
-  background: linear-gradient(135deg, #f8fafc 0%, #fff3e6 100%);
+  background: radial-gradient(circle at top left, rgba(249, 115, 22, 0.25), transparent 55%),
+    radial-gradient(circle at top right, rgba(34, 211, 238, 0.25), transparent 45%);
+  position: relative;
+  overflow: hidden;
 }
 
 .walkthrough-hero .lead {
-  color: var(--color-muted);
+  color: rgba(248, 250, 252, 0.75);
   max-width: 720px;
+}
+
+.walkthrough-hero::after {
+  content: "";
+  position: absolute;
+  inset: -40% 0 auto 0;
+  height: 260px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(248, 250, 252, 0.05) 0,
+    rgba(248, 250, 252, 0.05) 1px,
+    transparent 1px,
+    transparent 80px
+  );
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .walkthrough-layout {
@@ -256,40 +280,56 @@
   align-items: center;
   padding: 20px;
   border-radius: var(--radius-lg);
-  background: var(--color-card);
-  border: 1px solid #e2e8f0;
-  box-shadow: var(--shadow-soft);
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.45);
 }
 
 .assistant-avatar {
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
+  width: 96px;
+  height: 96px;
+  border-radius: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   color: #fff;
-  background: var(--color-primary);
-  letter-spacing: 0.06em;
+  background: rgba(30, 58, 95, 0.6);
+  border: 1px solid rgba(249, 115, 22, 0.4);
+  position: relative;
+}
+
+.assistant-badge {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: rgba(248, 250, 252, 0.7);
+}
+
+.assistant-icon {
+  width: 70px;
+  height: 70px;
 }
 
 .assistant-title {
   font-weight: 700;
   margin-bottom: 4px;
+  color: #f8fafc;
 }
 
 .assistant-subtitle {
-  color: var(--color-muted);
+  color: rgba(248, 250, 252, 0.68);
   font-size: 0.95rem;
 }
 
 .assistant-message {
   padding: 18px;
   border-radius: var(--radius-md);
-  background: #fff7ed;
-  border: 1px solid #fed7aa;
-  color: #9a3412;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  color: #f8fafc;
   font-weight: 600;
 }
 
@@ -315,11 +355,11 @@
 }
 
 .walkthrough-card {
-  background: var(--color-card);
+  background: rgba(15, 23, 42, 0.9);
   border-radius: var(--radius-lg);
   padding: 28px;
-  box-shadow: var(--shadow-soft);
-  border: 1px solid #e2e8f0;
+  box-shadow: 0 24px 60px rgba(8, 15, 30, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.2);
   display: grid;
   gap: 18px;
 }
@@ -327,6 +367,7 @@
 .walkthrough-question {
   font-size: 1.2rem;
   font-weight: 600;
+  color: #f8fafc;
 }
 
 .walkthrough-input {
@@ -338,8 +379,10 @@
 .walkthrough-input input {
   padding: 12px 14px;
   border-radius: var(--radius-sm);
-  border: 1px solid #cbd5f5;
+  border: 1px solid rgba(148, 163, 184, 0.5);
   font-size: 1rem;
+  background: rgba(15, 23, 42, 0.7);
+  color: #f8fafc;
 }
 
 .walkthrough-actions {
@@ -348,7 +391,7 @@
 }
 
 .walkthrough-status {
-  color: var(--color-muted);
+  color: rgba(248, 250, 252, 0.7);
   font-size: 0.95rem;
 }
 
@@ -356,8 +399,8 @@
   margin-top: 8px;
   padding: 20px;
   border-radius: var(--radius-md);
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: rgba(10, 14, 26, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.25);
   display: grid;
   gap: 14px;
 }
@@ -373,8 +416,8 @@
   align-items: center;
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(42, 157, 143, 0.12);
-  color: var(--color-secondary);
+  background: rgba(34, 211, 238, 0.15);
+  color: #67e8f9;
   font-weight: 600;
   font-size: 0.85rem;
 }
@@ -391,7 +434,7 @@
   padding: 6px 12px;
   border-radius: 999px;
   background: rgba(34, 197, 94, 0.12);
-  color: #166534;
+  color: #86efac;
   font-weight: 700;
   font-size: 0.85rem;
 }
@@ -401,10 +444,87 @@
   align-items: center;
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(234, 88, 12, 0.12);
-  color: #9a3412;
+  background: rgba(234, 88, 12, 0.18);
+  color: #fdba74;
   font-weight: 700;
   font-size: 0.85rem;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.report-kicker {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.55);
+}
+
+.report-score {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #f97316;
+}
+
+.report-score span {
+  font-size: 1rem;
+  color: rgba(248, 250, 252, 0.6);
+  margin-left: 6px;
+}
+
+.report-pill {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(249, 115, 22, 0.2);
+  color: #fdba74;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.report-card {
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(15, 23, 42, 0.6);
+}
+
+.report-card h4 {
+  margin-bottom: 6px;
+}
+
+.timeline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+}
+
+.timeline-step {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px dashed rgba(148, 163, 184, 0.35);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.timeline-step span {
+  display: block;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.6);
+}
+
+.timeline-step strong {
+  font-size: 0.95rem;
 }
 
 @media (max-width: 900px) {
