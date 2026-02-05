@@ -10,6 +10,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 const apiKey = process.env.OPEN_AI_KEY;
+const model = "gpt-5-mini";
 const openai = apiKey ? new OpenAI({ apiKey }) : null;
 
 app.set("trust proxy", true);
@@ -64,15 +65,15 @@ app.post("/api/chat", async (req, res) => {
     ].join(" ");
 
     const response = await openai.responses.create({
-      model: "gpt-5.2-mini",
+      model,
       input: [
         {
           role: "system",
-          content: [{ type: "text", text: systemPrompt }]
+          content: [{ type: "input_text", text: systemPrompt }]
         },
         {
           role: "user",
-          content: [{ type: "text", text: message }]
+          content: [{ type: "input_text", text: message }]
         }
       ],
       max_output_tokens: 220,
@@ -82,7 +83,9 @@ app.post("/api/chat", async (req, res) => {
     const reply = response.output_text?.trim() || "Please try again.";
     res.json({ reply });
   } catch (error) {
-    res.status(500).json({ error: "Chat service error." });
+    const message = error?.message || "Chat service error.";
+    console.error("Chat error:", message);
+    res.status(500).json({ error: message });
   }
 });
 
