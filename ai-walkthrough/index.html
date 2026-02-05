@@ -200,6 +200,26 @@
           return score;
         }
 
+        function buildClientFallback() {
+          var industry = answers.industry || "your industry";
+          var goals = answers.goals || "your goals";
+          var urgency = answers.timeline || "your timeline";
+          var summary =
+            "Based on what you shared, there are clear opportunities to apply AI " +
+            "to reduce friction and deliver measurable progress toward " + goals + ". " +
+            "We recommend starting with a focused assessment, then implementing " +
+            "one high‑impact workflow aligned to " + urgency + ".";
+          return {
+            summary: summary,
+            recommended_services: [
+              "AI Strategy Assessment",
+              "AI Integration"
+            ],
+            suggested_next_step:
+              "Book a call to map the assessment and a 90‑day execution plan."
+          };
+        }
+
         function renderResults(data) {
           var services = Array.isArray(data.recommended_services)
             ? data.recommended_services
@@ -278,12 +298,10 @@
             assistantMessage.textContent =
               "Here’s a high-level plan based on what you shared.";
           } catch (error) {
-            results.innerHTML =
-              '<div class="result-card"><p>Sorry, I hit an error. You can still book a call or email us and we’ll tailor the plan manually.</p>'
-              + '<div class="result-cta">'
-              + '<a class="button" href="/book-call/">Book a Call</a>'
-              + '<a class="button ghost" href="/contact/">Email Us</a>'
-              + "</div></div>";
+            var fallback = buildClientFallback();
+            renderResults(fallback);
+            assistantMessage.textContent =
+              "Here’s a quick plan based on your answers.";
           } finally {
             statusText.textContent = "";
             nextButton.disabled = false;
