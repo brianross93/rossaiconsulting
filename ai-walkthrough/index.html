@@ -186,8 +186,12 @@
               return '<span class="pill">' + service + "</span>";
             })
             .join(" ");
+          var emailBadge = emailedTo
+            ? '<div class="email-success">Email sent to ' + emailedTo + ".</div>"
+            : "";
           results.innerHTML = ""
             + '<div class="result-card">'
+            + emailBadge
             + '<h3>Recommended path</h3>'
             + "<p>" + (data.summary || "Here’s a tailored recommendation.") + "</p>"
             + '<div class="result-services">' + servicesHtml + "</div>"
