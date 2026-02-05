@@ -209,9 +209,24 @@
           var filled = questions.reduce(function (count, q) {
             return answers[q.key] ? count + 1 : count;
           }, 0);
-          var score = 60 + filled * 5;
-          if (score > 92) {
-            score = 92;
+          var completionBoost = Math.round((filled / questions.length) * 10);
+          var answerSeed = questions
+            .map(function (q) {
+              return String(answers[q.key] || "").toLowerCase().trim();
+            })
+            .join("|");
+          var hash = 0;
+          for (var i = 0; i < answerSeed.length; i += 1) {
+            hash = (hash * 31 + answerSeed.charCodeAt(i)) % 100000;
+          }
+          var variance = hash % 9; // 0-8
+          var score = 80 + completionBoost + variance;
+
+          if (filled === questions.length && score < 90) {
+            score = 90 + (variance % 4);
+          }
+          if (score > 98) {
+            score = 98;
           }
           return score;
         }
