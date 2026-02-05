@@ -27,6 +27,72 @@ const rateLimitStore = new Map();
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX = 20;
 
+const timezoneMap = {
+  est: "America/New_York",
+  edt: "America/New_York",
+  cst: "America/Chicago",
+  cdt: "America/Chicago",
+  mst: "America/Denver",
+  mdt: "America/Denver",
+  pst: "America/Los_Angeles",
+  pdt: "America/Los_Angeles"
+};
+
+function normalizeTimezone(input) {
+  if (!input) return "America/Chicago";
+  const key = String(input).trim().toLowerCase();
+  return timezoneMap[key] || input;
+}
+
+function parseWindow(input) {
+  if (!input) return null;
+  const match = String(input).match(/(\d{1,2})\s*-\s*(\d{1,2})/);
+  if (!match) return null;
+  let start = Number(match[1]);
+  let end = Number(match[2]);
+  if (Number.isNaN(start) || Number.isNaN(end)) return null;
+  if (end <= start && start < 12) {
+    end += 12;
+  }
+  if (start < 0 || start > 23 || end < 1 || end > 24) return null;
+  return { start, end };
+}
+
+function formatSlotLabel(iso, timezone) {
+  try {
+    const date = new Date(iso);
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit"
+    });
+    return formatter.format(date) + " (" + timezone + ")";
+  } catch {
+    return iso;
+  }
+}
+
+function slotMatchesWindow(iso, timezone, window) {
+  if (!window) return true;
+  try {
+    const date = new Date(iso);
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      hour: "numeric",
+      hour12: false
+    }).formatToParts(date);
+    const hourPart = parts.find((part) => part.type === "hour");
+    const hour = Number(hourPart?.value);
+    if (Number.isNaN(hour)) return true;
+    return hour >= window.start && hour < window.end;
+  } catch {
+    return true;
+  }
+}
+
 app.post("/api/chat", async (req, res) => {
   try {
     if (!openai) {
@@ -89,39 +155,100 @@ app.post("/api/chat", async (req, res) => {
   }
 });
 
+app.post("/api/walkthrough", async (req, res) => {
+  try {
+    if (!openai) {
+      return res.status(500).json({ error: "Missing OPEN_AI_KEY." });
+    }
+
+    const payload = req.body || {};
+    const answers = Array.isArray(payload.answers) ? payload.answers : [];
+    if (answers.length === 0) {
+      return res.status(400).json({ error: "Answers are required." });
+    }
+
+    const systemPrompt = [
+      "You are the Ross Applied AI Consulting walkthrough assistant.",
+      "Extract key business details from the user's answers and recommend",
+      "the most relevant services we offer.",
+      "Services: AI Strategy Assessment, AI Integration, Custom AI Development,",
+      "AI Training & Enablement, Ongoing AI Support, Talks & Presentations.",
+      "Return ONLY valid JSON with this schema:",
+      "{",
+      '  "summary": string,',
+      '  "extracted": {',
+      '    "industry": string,',
+      '    "team_size": string,',
+      '    "pain_points": string,',
+      '    "tools": string,',
+      '    "goals": string,',
+      '    "timeline": string,',
+      '    "budget": string',
+      "  },",
+      '  "recommended_services": string[],',
+      '  "suggested_next_step": string',
+      "}",
+      "Keep the summary to 3-5 sentences, business-focused, and specific.",
+      "If info is missing, say 'unknown' in extracted fields.",
+      "Do not include markdown or extra keys."
+    ].join(" ");
+
+    const response = await openai.responses.create({
+      model,
+      input: [
+        {
+          role: "system",
+          content: [{ type: "input_text", text: systemPrompt }]
+        },
+        {
+          role: "user",
+          content: [
+            {
+              type: "input_text",
+              text: JSON.stringify({ answers })
+            }
+          ]
+        }
+      ]
+    });
+
+    const raw = response.output_text?.trim();
+    if (!raw) {
+      return res.status(500).json({ error: "Empty model response." });
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (parseError) {
+      console.error("Walkthrough JSON parse error:", parseError);
+      return res.status(500).json({ error: "Invalid model response." });
+    }
+
+    res.json(parsed);
+  } catch (error) {
+    const message = error?.message || "Walkthrough service error.";
+    console.error("Walkthrough error:", message);
+    res.status(500).json({ error: message });
+  }
+});
+
 app.post("/api/schedule", async (req, res) => {
   try {
+    if (!calendlyToken) {
+      return res.status(500).json({ error: "Missing CALENDLY_API." });
+    }
+
     const name = String(req.body?.name || "").trim();
     const email = String(req.body?.email || "").trim();
     const company = String(req.body?.company || "").trim();
     const goals = String(req.body?.goals || "").trim();
     const times = String(req.body?.times || "").trim();
+    const timezone = normalizeTimezone(req.body?.timezone);
+    const startAfter = String(req.body?.startAfter || "").trim();
 
     if (!name || !email || !goals || !times) {
       return res.status(400).json({ error: "Missing required fields." });
-    }
-
-    const bodyLines = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      company ? `Company: ${company}` : "Company: (not provided)",
-      `Goals: ${goals}`,
-      `Preferred times: ${times}`
-    ];
-    const subject = encodeURIComponent("AI intro call scheduling request");
-    const body = encodeURIComponent(bodyLines.join("\n"));
-    const mailto = `mailto:hello@rossapplied.ai?subject=${subject}&body=${body}`;
-
-    const fallbackSchedulingUrl =
-      calendlySchedulingUrl || "https://rossapplied.ai/book-call/";
-
-    if (!calendlyToken) {
-      return res.json({
-        schedulingUrl: fallbackSchedulingUrl,
-        mailto,
-        summary:
-          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
-      });
     }
 
     const headers = {
@@ -131,24 +258,12 @@ app.post("/api/schedule", async (req, res) => {
 
     const userResp = await fetch("https://api.calendly.com/users/me", { headers });
     if (!userResp.ok) {
-      console.error("Calendly user lookup failed:", userResp.status);
-      return res.json({
-        schedulingUrl: fallbackSchedulingUrl,
-        mailto,
-        summary:
-          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
-      });
+      return res.status(500).json({ error: "Calendly user lookup failed." });
     }
     const userData = await userResp.json();
     const userUri = userData?.resource?.uri;
     if (!userUri) {
-      console.error("Calendly user not found.");
-      return res.json({
-        schedulingUrl: fallbackSchedulingUrl,
-        mailto,
-        summary:
-          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
-      });
+      return res.status(500).json({ error: "Calendly user not found." });
     }
 
     const eventsResp = await fetch(
@@ -156,40 +271,133 @@ app.post("/api/schedule", async (req, res) => {
       { headers }
     );
     if (!eventsResp.ok) {
-      console.error("Calendly event types lookup failed:", eventsResp.status);
-      return res.json({
-        schedulingUrl: fallbackSchedulingUrl,
-        mailto,
-        summary:
-          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
-      });
+      return res.status(500).json({ error: "Calendly event types lookup failed." });
     }
     const eventsData = await eventsResp.json();
     const eventTypes = Array.isArray(eventsData?.collection) ? eventsData.collection : [];
     if (eventTypes.length === 0) {
-      console.error("No Calendly event types found.");
-      return res.json({
-        schedulingUrl: fallbackSchedulingUrl,
-        mailto,
-        summary:
-          "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
-      });
+      return res.status(500).json({ error: "No Calendly event types found." });
     }
 
     const preferred = eventTypes.find((evt) =>
       String(evt?.name || "").toLowerCase().includes("intro")
     );
     const selected = preferred || eventTypes[0];
-    const schedulingUrl = selected?.scheduling_url || selected?.uri || "https://calendly.com";
+    const eventTypeUri = selected?.uri;
+    if (!eventTypeUri) {
+      return res.status(500).json({ error: "Calendly event type URI missing." });
+    }
+
+    const window = parseWindow(times);
+    const start = startAfter ? new Date(startAfter) : new Date();
+    const end = new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    const availableResp = await fetch(
+      `https://api.calendly.com/event_type_available_times?event_type=${encodeURIComponent(
+        eventTypeUri
+      )}&start_time=${encodeURIComponent(start.toISOString())}&end_time=${encodeURIComponent(
+        end.toISOString()
+      )}`,
+      { headers }
+    );
+    if (!availableResp.ok) {
+      return res.status(500).json({ error: "Calendly availability lookup failed." });
+    }
+    const availableData = await availableResp.json();
+    const slots = Array.isArray(availableData?.collection) ? availableData.collection : [];
+    const filtered = slots
+      .filter((slot) => slotMatchesWindow(slot.start_time, timezone, window))
+      .slice(0, 3)
+      .map((slot) => ({
+        start_time: slot.start_time,
+        end_time: slot.end_time,
+        label: formatSlotLabel(slot.start_time, timezone)
+      }));
 
     res.json({
-      schedulingUrl,
-      mailto,
-      summary:
-        "Thanks! Use the scheduling link to pick a time. We can also follow up by email if needed."
+      suggestions: filtered,
+      eventTypeUri,
+      summary: filtered.length
+        ? "Here are a few available times."
+        : "No available times matched. Try a different window or timezone."
     });
   } catch (error) {
     res.status(500).json({ error: "Schedule service error." });
+  }
+});
+
+app.post("/api/schedule/confirm", async (req, res) => {
+  try {
+    if (!calendlyToken) {
+      return res.status(500).json({ error: "Missing CALENDLY_API." });
+    }
+
+    const name = String(req.body?.name || "").trim();
+    const email = String(req.body?.email || "").trim();
+    const timezone = normalizeTimezone(req.body?.timezone);
+    const eventTypeUri = String(req.body?.eventTypeUri || "").trim();
+    const startTime = String(req.body?.startTime || "").trim();
+
+    if (!name || !email || !eventTypeUri || !startTime) {
+      return res.status(400).json({ error: "Missing required fields." });
+    }
+
+    const headers = {
+      Authorization: `Bearer ${calendlyToken}`,
+      "Content-Type": "application/json"
+    };
+
+    const eventTypeId = eventTypeUri.split("/").pop();
+    let locationPayload;
+    if (eventTypeId) {
+      const eventTypeResp = await fetch(
+        `https://api.calendly.com/event_types/${eventTypeId}`,
+        { headers }
+      );
+      if (eventTypeResp.ok) {
+        const eventTypeData = await eventTypeResp.json();
+        const location = eventTypeData?.resource?.location;
+        if (location?.kind) {
+          locationPayload = { kind: location.kind };
+          if (location.location) {
+            locationPayload.location = location.location;
+          }
+        }
+      }
+    }
+
+    const inviteePayload = {
+      event_type: eventTypeUri,
+      start_time: startTime,
+      invitee: {
+        name,
+        email,
+        timezone
+      }
+    };
+
+    if (locationPayload) {
+      inviteePayload.location = locationPayload;
+    }
+
+    const inviteeResp = await fetch("https://api.calendly.com/invitees", {
+      method: "POST",
+      headers,
+      body: JSON.stringify(inviteePayload)
+    });
+
+    if (!inviteeResp.ok) {
+      return res.status(500).json({ error: "Calendly booking failed." });
+    }
+
+    const inviteeData = await inviteeResp.json();
+    res.json({
+      summary: "You’re booked! A confirmation email is on the way.",
+      rescheduleUrl: inviteeData?.resource?.reschedule_url,
+      cancelUrl: inviteeData?.resource?.cancel_url
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Schedule confirmation failed." });
   }
 });
 

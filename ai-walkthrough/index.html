@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AI Walkthrough | Ross Applied AI Consulting</title>
+    <meta
+      name="description"
+      content="Interactive AI walkthrough that maps your business goals to Ross Applied AI services."
+    />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#1e3a5f" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="container nav-inner">
+        <a class="logo" href="/">Ross Applied AI</a>
+        <nav class="nav-links">
+          <a href="/services/">Services</a>
+          <a href="/about/">About</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/blog/">Blog</a>
+          <a href="/contact/">Contact</a>
+        </nav>
+        <a class="button" href="/book-call/">Book a Call</a>
+      </div>
+    </header>
+
+    <section class="walkthrough-hero">
+      <div class="container">
+        <div class="eyebrow">Interactive Walkthrough</div>
+        <h1>See how AI could transform your business</h1>
+        <p class="lead">
+          Answer a few quick questions. We’ll map your goals to the most
+          relevant Ross Applied AI services and next steps.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container walkthrough-layout">
+        <div class="walkthrough-assistant">
+          <div class="assistant-card">
+            <div class="assistant-avatar">RC</div>
+            <div>
+              <div class="assistant-title">AI Guide</div>
+              <div class="assistant-subtitle">
+                I’ll ask a few questions and build a tailored recommendation.
+              </div>
+            </div>
+          </div>
+          <div class="assistant-message" id="assistantMessage">
+            Ready when you are. Let’s start with the basics.
+          </div>
+          <div class="assistant-progress">
+            <span id="progressText">Step 1 of 7</span>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="walkthrough-card">
+          <div class="walkthrough-question" id="questionText"></div>
+          <div class="walkthrough-input">
+            <input
+              type="text"
+              id="answerInput"
+              placeholder="Type your answer here..."
+              autocomplete="off"
+            />
+            <button class="button" id="nextButton" type="button">Next</button>
+          </div>
+          <div class="walkthrough-actions">
+            <button class="button ghost" id="backButton" type="button">
+              Back
+            </button>
+            <button class="button ghost" id="restartButton" type="button">
+              Restart
+            </button>
+          </div>
+          <div class="walkthrough-status" id="statusText"></div>
+          <div class="walkthrough-results" id="results"></div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      (function () {
+        var questions = [
+          {
+            key: "industry",
+            prompt: "What type of business are you in?"
+          },
+          {
+            key: "team_size",
+            prompt: "Roughly how big is your team?"
+          },
+          {
+            key: "pain_points",
+            prompt: "What’s the biggest operational bottleneck right now?"
+          },
+          {
+            key: "tools",
+            prompt: "What tools or systems do you use daily?"
+          },
+          {
+            key: "goals",
+            prompt: "What outcome do you want AI to deliver in the next 90 days?"
+          },
+          {
+            key: "timeline",
+            prompt: "What timeline are you targeting to get this live?"
+          },
+          {
+            key: "budget",
+            prompt: "Do you have a budget range in mind?"
+          }
+        ];
+
+        var currentIndex = 0;
+        var answers = {};
+
+        var questionText = document.getElementById("questionText");
+        var answerInput = document.getElementById("answerInput");
+        var nextButton = document.getElementById("nextButton");
+        var backButton = document.getElementById("backButton");
+        var restartButton = document.getElementById("restartButton");
+        var statusText = document.getElementById("statusText");
+        var results = document.getElementById("results");
+        var assistantMessage = document.getElementById("assistantMessage");
+        var progressText = document.getElementById("progressText");
+        var progressFill = document.getElementById("progressFill");
+
+        function updateProgress() {
+          var step = currentIndex + 1;
+          progressText.textContent = "Step " + step + " of " + questions.length;
+          var percent = Math.round((step / questions.length) * 100);
+          progressFill.style.width = percent + "%";
+        }
+
+        function showQuestion() {
+          var current = questions[currentIndex];
+          questionText.textContent = current.prompt;
+          answerInput.value = answers[current.key] || "";
+          statusText.textContent = "";
+          results.innerHTML = "";
+          assistantMessage.textContent =
+            "Tell me about your " + current.key.replace("_", " ") + ".";
+          updateProgress();
+          backButton.disabled = currentIndex === 0;
+        }
+
+        function collectAnswers() {
+          return questions.map(function (q) {
+            return {
+              question: q.prompt,
+              answer: answers[q.key] || ""
+            };
+          });
+        }
+
+        function renderResults(data) {
+          var services = Array.isArray(data.recommended_services)
+            ? data.recommended_services
+            : [];
+          var servicesHtml = services
+            .map(function (service) {
+              return '<span class="pill">' + service + "</span>";
+            })
+            .join(" ");
+          results.innerHTML = ""
+            + '<div class="result-card">'
+            + '<h3>Recommended path</h3>'
+            + "<p>" + (data.summary || "Here’s a tailored recommendation.") + "</p>"
+            + '<div class="result-services">' + servicesHtml + "</div>"
+            + "<p><strong>Next step:</strong> "
+            + (data.suggested_next_step || "Book a call to map the plan.")
+            + "</p>"
+            + '<div class="result-cta">'
+            + '<a class="button" href="/book-call/">Book a Call</a>'
+            + '<a class="button ghost" href="/contact/">Email Us</a>'
+            + "</div>"
+            + "</div>";
+        }
+
+        async function finish() {
+          statusText.textContent = "Analyzing your answers...";
+          nextButton.disabled = true;
+          backButton.disabled = true;
+          try {
+            var response = await fetch("/api/walkthrough", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ answers: collectAnswers() })
+            });
+            if (!response.ok) {
+              throw new Error("Walkthrough request failed");
+            }
+            var data = await response.json();
+            renderResults(data);
+            assistantMessage.textContent =
+              "Here’s a high-level plan based on what you shared.";
+          } catch (error) {
+            results.innerHTML =
+              '<div class="result-card"><p>Sorry, I hit an error. You can still book a call or email us and we’ll tailor the plan manually.</p>'
+              + '<div class="result-cta">'
+              + '<a class="button" href="/book-call/">Book a Call</a>'
+              + '<a class="button ghost" href="/contact/">Email Us</a>'
+              + "</div></div>";
+          } finally {
+            statusText.textContent = "";
+            nextButton.disabled = false;
+            backButton.disabled = false;
+          }
+        }
+
+        nextButton.addEventListener("click", function () {
+          var current = questions[currentIndex];
+          var value = answerInput.value.trim();
+          if (!value) {
+            statusText.textContent = "Please add a quick answer to continue.";
+            return;
+          }
+          answers[current.key] = value;
+          if (currentIndex < questions.length - 1) {
+            currentIndex += 1;
+            showQuestion();
+          } else {
+            finish();
+          }
+        });
+
+        backButton.addEventListener("click", function () {
+          if (currentIndex === 0) {
+            return;
+          }
+          var current = questions[currentIndex];
+          answers[current.key] = answerInput.value.trim();
+          currentIndex -= 1;
+          showQuestion();
+        });
+
+        restartButton.addEventListener("click", function () {
+          currentIndex = 0;
+          answers = {};
+          showQuestion();
+        });
+
+        answerInput.addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            nextButton.click();
+          }
+        });
+
+        showQuestion();
+      })();
+    </script>
+  </body>
+</html>
