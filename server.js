@@ -331,6 +331,7 @@ app.post("/api/walkthrough", async (req, res) => {
     }
 
     const emailSubject = "Your AI Walkthrough Summary";
+    const internalSubject = "New AI Walkthrough Submission";
     const services = Array.isArray(parsed.recommended_services)
       ? parsed.recommended_services
       : [];
@@ -360,6 +361,28 @@ app.post("/api/walkthrough", async (req, res) => {
       </div>
     `;
 
+    const answersHtml = answers
+      .map((item) => {
+        const question = String(item?.question || "unknown");
+        const answer = String(item?.answer || "unknown");
+        return `<li><strong>${question}</strong>: ${answer}</li>`;
+      })
+      .join("");
+
+    const internalHtml = `
+      <div style="font-family: Arial, sans-serif; color: #0f172a;">
+        <h2>New AI Walkthrough Submission</h2>
+        <p><strong>Submitted at:</strong> ${new Date().toISOString()}</p>
+        <p><strong>User email:</strong> ${userEmail || "(not provided)"}</p>
+        <h3>Generated Summary</h3>
+        <p>${summaryText}</p>
+        <h3>Recommended Services</h3>
+        <p>${servicesList}</p>
+        <h3>Submitted Answers</h3>
+        <ul>${answersHtml}</ul>
+      </div>
+    `;
+
     const text = [
       "AI Walkthrough Summary",
       summaryText,
@@ -376,30 +399,65 @@ app.post("/api/walkthrough", async (req, res) => {
       "Book a call: https://rossapplied.ai/book-call/"
     ].join("\n");
 
-    let emailError = "";
-    if (!userEmail) {
-      emailError = "No user email captured.";
-    } else if (!resendApiKey) {
-      emailError = "Missing RESEND_API_KEY.";
+    const internalText = [
+      "New AI Walkthrough Submission",
+      "Submitted at: " + new Date().toISOString(),
+      "User email: " + (userEmail || "(not provided)"),
+      "",
+      "Summary:",
+      summaryText,
+      "",
+      "Recommended Services:",
+      servicesList,
+      "",
+      "Submitted Answers:",
+      ...answers.map((item) =>
+        `${String(item?.question || "unknown")}: ${String(item?.answer || "unknown")}`
+      )
+    ].join("\n");
+
+    let internalEmailError = "";
+    let userEmailError = "";
+
+    if (!resendApiKey) {
+      internalEmailError = "Missing RESEND_API_KEY.";
+      userEmailError = "Missing RESEND_API_KEY.";
     } else {
       try {
-        const recipients = [userEmail, "hello@rossapplied.ai"];
         await sendResendEmail({
-          to: recipients,
-          subject: emailSubject,
-          html,
-          text
+          to: "hello@rossapplied.ai",
+          subject: internalSubject,
+          html: internalHtml,
+          text: internalText
         });
       } catch (sendError) {
-        emailError = sendError?.message || "Email send failed.";
-        console.error("Resend send error:", emailError);
+        internalEmailError = sendError?.message || "Internal email send failed.";
+        console.error("Internal walkthrough email error:", internalEmailError);
+      }
+
+      if (userEmail) {
+        try {
+          await sendResendEmail({
+            to: userEmail,
+            subject: emailSubject,
+            html,
+            text
+          });
+        } catch (sendError) {
+          userEmailError = sendError?.message || "User email send failed.";
+          console.error("User walkthrough email error:", userEmailError);
+        }
+      } else {
+        userEmailError = "No user email captured.";
       }
     }
 
     res.json({
       ...parsed,
-      emailed_to: emailError ? "" : userEmail,
-      email_error: emailError
+      emailed_to: userEmailError ? "" : userEmail,
+      email_error: userEmailError,
+      owner_notified: !internalEmailError,
+      owner_email_error: internalEmailError
     });
   } catch (error) {
     const message = error?.message || "Walkthrough service error.";
