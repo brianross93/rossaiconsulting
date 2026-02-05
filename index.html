@@ -427,13 +427,14 @@
             addMessage(data.summary || "Thanks! We will follow up soon.", "bot");
             if (data.schedulingUrl) {
               addMessage(
-                "Schedule here: " + data.schedulingUrl,
+                "Book your intro call here: " + data.schedulingUrl,
                 "bot"
               );
             }
-            if (data.mailto) {
-              addMessage("Backup email option: " + data.mailto, "bot");
-            }
+            addMessage(
+              "Prefer email? Write to hello@rossapplied.ai and include your goals and a few times that work.",
+              "bot"
+            );
           } catch (error) {
             addMessage(
               "Sorry, scheduling failed. You can email hello@rossapplied.ai or book at https://rossapplied.ai/book-call/.",
