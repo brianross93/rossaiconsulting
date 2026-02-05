@@ -76,8 +76,6 @@ app.post("/api/chat", async (req, res) => {
           content: [{ type: "input_text", text: message }]
         }
       ],
-      max_output_tokens: 220,
-      temperature: 0.2
     });
 
     const reply = response.output_text?.trim() || "Please try again.";
