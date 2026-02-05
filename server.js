@@ -183,21 +183,25 @@ app.post("/api/chat", async (req, res) => {
 
 app.post("/api/walkthrough", async (req, res) => {
   try {
-    if (!openai) {
-      return res.status(500).json({ error: "Missing OPEN_AI_KEY." });
-    }
-
     const payload = req.body || {};
     const answers = Array.isArray(payload.answers) ? payload.answers : [];
     if (answers.length === 0) {
       return res.status(400).json({ error: "Answers are required." });
     }
 
-    const emailEntry = answers.find((item) => item.question && item.answer && String(item.question).toLowerCase().includes("email"));
-    const userEmail = emailEntry ? String(emailEntry.answer).trim() : "";
-    if (!userEmail) {
-      return res.status(400).json({ error: "Email is required." });
-    }
+    const emailFromKey = answers.find(
+      (item) => String(item?.key || "").toLowerCase() === "email"
+    );
+    const emailFromQuestion = answers.find((item) =>
+      String(item?.question || "").toLowerCase().includes("email")
+    );
+    const emailFromAnswerPattern = answers.find((item) =>
+      /[^\s@]+@[^\s@]+\.[^\s@]+/.test(String(item?.answer || ""))
+    );
+
+    const userEmail = String(
+      emailFromKey?.answer || emailFromQuestion?.answer || emailFromAnswerPattern?.answer || ""
+    ).trim();
 
     const systemPrompt = [
       "You are the Ross Applied AI Consulting walkthrough assistant.",
@@ -279,42 +283,50 @@ app.post("/api/walkthrough", async (req, res) => {
     }
 
     let parsed;
-    try {
-      const response = await openai.responses.create({
-        model,
-        input: [
-          {
-            role: "system",
-            content: [{ type: "input_text", text: systemPrompt }]
-          },
-          {
-            role: "user",
-            content: [
-              {
-                type: "input_text",
-                text: JSON.stringify({ answers })
-              }
-            ]
-          }
-        ]
-      });
-
-      const raw = response.output_text?.trim();
-      if (!raw) {
-        throw new Error("Empty model response.");
-      }
-
+    if (!openai) {
+      parsed = buildFallbackReport();
+    } else {
       try {
-        parsed = JSON.parse(raw);
-      } catch (parseError) {
-        const match = raw.match(/\{[\s\S]*\}/);
-        if (!match) {
-          throw parseError;
+        const response = await openai.responses.create({
+          model,
+          input: [
+            {
+              role: "system",
+              content: [{ type: "input_text", text: systemPrompt }]
+            },
+            {
+              role: "user",
+              content: [
+                {
+                  type: "input_text",
+                  text: JSON.stringify({ answers })
+                }
+              ]
+            }
+          ]
+        });
+
+        const raw = response.output_text?.trim();
+        if (!raw) {
+          throw new Error("Empty model response.");
         }
-        parsed = JSON.parse(match[0]);
+
+        try {
+          parsed = JSON.parse(raw);
+        } catch (parseError) {
+          const match = raw.match(/\{[\s\S]*\}/);
+          if (!match) {
+            throw parseError;
+          }
+          parsed = JSON.parse(match[0]);
+        }
+      } catch (modelError) {
+        console.error("Walkthrough model error:", modelError?.message || modelError);
+        parsed = buildFallbackReport();
       }
-    } catch (modelError) {
-      console.error("Walkthrough model error:", modelError?.message || modelError);
+    }
+
+    if (!parsed || typeof parsed !== "object") {
       parsed = buildFallbackReport();
     }
 
@@ -365,7 +377,9 @@ app.post("/api/walkthrough", async (req, res) => {
     ].join("\n");
 
     let emailError = "";
-    if (!resendApiKey) {
+    if (!userEmail) {
+      emailError = "No user email captured.";
+    } else if (!resendApiKey) {
       emailError = "Missing RESEND_API_KEY.";
     } else {
       try {

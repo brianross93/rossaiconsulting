@@ -183,6 +183,7 @@
         function collectAnswers() {
           return questions.map(function (q) {
             return {
+              key: q.key,
               question: q.prompt,
               answer: answers[q.key] || ""
             };
