@@ -8,6 +8,7 @@ Service Area
 Tulsa, OK, OKC, and the greater Oklahoma area.
 
 Core Services
+- Local Search Visibility Fix Sprint
 - AI Strategy Assessment
 - AI Integration
 - Custom AI Development
@@ -23,7 +24,7 @@ Pricing (public guidance)
 - Growth: $7,500 (implementation + training)
 - Enterprise: $20,000+ (custom development)
 - Retainer: $1,500/month
-- Talks: Tulsa-area keynotes start at $1,500 (workshops quoted)
+- Talks: Tulsa-area keynotes start at $500 (workshops quoted)
 
 Intro Call
 Free 30-minute intro call.
@@ -35,6 +36,7 @@ Book a call: https://rossapplied.ai/book-call/
 Key Pages
 Home: https://rossapplied.ai/
 Services: https://rossapplied.ai/services/
+Local Search Visibility: https://rossapplied.ai/services/local-search-visibility/
 Talks: https://rossapplied.ai/services/talks/
 About: https://rossapplied.ai/about/
 Case Studies: https://rossapplied.ai/case-studies/

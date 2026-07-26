@@ -8,33 +8,54 @@
        name="description"
       content="Book a strategy call with Ross Applied AI to discuss AI consulting in Tulsa."
      />
-     <link rel="stylesheet" href="/styles.css" />
+     <link rel="canonical" href="https://rossapplied.ai/book-call/" />
+    <meta name="theme-color" content="#11273d" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/refresh.css" />
+    <link rel="stylesheet" href="/fixes.css" />
      <link rel="preconnect" href="https://fonts.googleapis.com" />
      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-     <link
-       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-       rel="stylesheet"
-     />
-   </head>
+     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
+       <script src="/site.js" defer></script>
+  </head>
    <body>
-     <header class="nav">
-       <div class="container nav-inner">
-        <a class="logo" href="/">Ross Applied AI</a>
-         <nav class="nav-links" aria-label="Primary">
-           <a href="/services/">Services</a>
-           <a href="/about/">About</a>
-           <a href="/case-studies/">Case Studies</a>
-           <a href="/blog/">Blog</a>
-           <a href="/contact/">Contact</a>
-         </nav>
-         <a class="button" href="/book-call/">Book a Call</a>
-       </div>
-     </header>
+     <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="nav" data-site-header>
+      <div class="container nav-inner">
+        <a class="logo" href="/" aria-label="Ross Applied AI home">
+          <span class="logo-mark" aria-hidden="true">RA</span>
+          <span class="logo-type">
+            <strong>Ross Applied</strong>
+            <small>AI consulting · Tulsa</small>
+          </span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-navigation"
+          data-nav-toggle
+        >
+          <span>Menu</span>
+          <span class="nav-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <nav class="nav-links" id="site-navigation" aria-label="Primary">
+          <a href="/services/">Services</a>
+          <a href="/about/">About</a>
+          <a href="/case-studies/">Case Studies</a>
+          <a href="/blog/">Insights</a>
+          <a href="/contact/">Contact</a>
+          <a class="nav-mobile-cta" href="/book-call/">Book a call</a>
+        </nav>
+        <a class="button button-small nav-cta" href="/book-call/">Book a call</a>
+      </div>
+    </header>
 
+          <main id="main-content">
       <section class="hero">
         <div class="container">
-          <div class="eyebrow">Book a Call</div>
-          <h1>Schedule your free AI strategy call</h1>
+<h1>Schedule your free AI strategy call</h1>
           <p>
             Choose a time that works and we will discuss your goals, challenges,
             and next steps.
@@ -63,7 +84,7 @@
           </div>
         </div>
         <div class="card">
-          <div class="tag">What to expect</div>
+          <h2>What to expect</h2>
           <div class="list">
             <span>30-minute strategy call</span>
             <span>Review current workflows and pain points</span>
@@ -78,27 +99,47 @@
        </div>
      </section>
 
+     </main>
+
+
+
      <footer class="footer">
-       <div class="container footer-grid">
-         <div>
-          <strong>Ross Applied AI</strong>
-           <p>Practical AI for Tulsa businesses.</p>
-         </div>
-         <div>
-           <div class="list">
-             <a href="/services/">Services</a>
-             <a href="/case-studies/">Case Studies</a>
-             <a href="/blog/">Blog</a>
-           </div>
-         </div>
-         <div>
-           <div class="list">
-             <span>Tulsa, OK</span>
-            <a href="/contact/">hello@rossapplied.ai</a>
-             <a href="/book-call/">Book a Call</a>
-           </div>
-         </div>
-       </div>
-     </footer>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <a class="logo" href="/" aria-label="Ross Applied AI home">
+            <span class="logo-mark" aria-hidden="true">RA</span>
+            <span class="logo-type">
+              <strong>Ross Applied</strong>
+              <small>AI consulting · Tulsa</small>
+            </span>
+          </a>
+          <p>
+            Practical AI strategy, implementation, and enablement for Oklahoma
+            businesses.
+          </p>
+        </div>
+        <div>
+          <div class="footer-label">Explore</div>
+          <nav class="list" aria-label="Footer">
+            <a href="/services/">Services</a>
+            <a href="/services/local-search-visibility/">Visibility Sprint</a>
+            <a href="/case-studies/">Project Examples</a>
+            <a href="/blog/">Insights</a>
+          </nav>
+        </div>
+        <div>
+          <div class="footer-label">Contact</div>
+          <div class="list">
+            <span>Tulsa, Oklahoma</span>
+            <a href="mailto:hello@rossapplied.ai">hello@rossapplied.ai</a>
+            <a href="/book-call/">Book a call</a>
+          </div>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <span>© <span data-current-year>2026</span> Ross Applied AI.</span>
+        <span>Strategy · Integration · Training · Implementation</span>
+      </div>
+    </footer>
    </body>
  </html>

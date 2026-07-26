@@ -9,116 +9,212 @@
       content="Interactive AI walkthrough that maps your business goals to Ross Applied AI services."
     />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#13252f" />
+    <meta name="theme-color" content="#11273d" />
+    <link
+      rel="canonical"
+      href="https://rossapplied.ai/ai-walkthrough/"
+    />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/refresh.css" />
+    <link rel="stylesheet" href="/fixes.css" />
+    <link rel="stylesheet" href="/walkthrough-refresh.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap"
       rel="stylesheet"
     />
+    <script src="/site.js" defer></script>
   </head>
-  <body class="walkthrough-page">
-    <header class="nav">
+  <body class="walkthrough-page walkthrough-editorial">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="nav" data-site-header>
       <div class="container nav-inner">
-        <a class="logo" href="/">Ross Applied AI</a>
-        <nav class="nav-links" aria-label="Primary">
+        <a class="logo" href="/" aria-label="Ross Applied AI home">
+          <span class="logo-mark" aria-hidden="true">RA</span>
+          <span class="logo-type">
+            <strong>Ross Applied</strong>
+            <small>AI consulting · Tulsa</small>
+          </span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-navigation"
+          data-nav-toggle
+        >
+          <span>Menu</span>
+          <span class="nav-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <nav class="nav-links" id="site-navigation" aria-label="Primary">
           <a href="/services/">Services</a>
           <a href="/about/">About</a>
           <a href="/case-studies/">Case Studies</a>
-          <a href="/blog/">Blog</a>
+          <a href="/blog/">Insights</a>
           <a href="/contact/">Contact</a>
+          <a class="nav-mobile-cta" href="/book-call/">Book a call</a>
         </nav>
-        <a class="button" href="/book-call/">Book a Call</a>
+        <a class="button button-small nav-cta" href="/book-call/">Book a call</a>
       </div>
     </header>
 
-    <section class="walkthrough-hero walkthrough-cinematic">
-      <div class="walkthrough-layer layer-grid"></div>
-      <div class="walkthrough-layer layer-glow"></div>
-      <div class="container">
-        <div class="eyebrow reveal-on-scroll">Interactive Walkthrough</div>
-        <h1 class="walkthrough-title reveal-on-scroll">
-          AI Opportunity Walkthrough
-        </h1>
-        <p class="lead reveal-on-scroll">
-          Answer a few questions. Get a tailored, high-level plan in under 2 minutes.
-        </p>
-      </div>
-    </section>
-
-    <section class="story-strip">
-      <div class="container story-grid">
-        <article class="story-card reveal-on-scroll">
-          <span>01</span>
-          <h3>Business Context</h3>
-          <p>Capture your workflow, constraints, and goals in a focused sequence.</p>
-        </article>
-        <article class="story-card reveal-on-scroll">
-          <span>02</span>
-          <h3>AI Diagnosis</h3>
-          <p>Convert inputs into clear implementation opportunities and risk-aware priorities.</p>
-        </article>
-        <article class="story-card reveal-on-scroll">
-          <span>03</span>
-          <h3>Action Plan</h3>
-          <p>Generate a concise, executive-friendly report and immediate next step.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section walkthrough-stage" id="quizStage">
-      <div class="container walkthrough-layout">
-        <aside class="walkthrough-assistant">
-          <div class="assistant-card">
-            <div class="assistant-avatar">
-              <div class="assistant-orb"></div>
-              <div class="assistant-glow"></div>
-            </div>
-            <div>
-              <div class="assistant-title">AI Guide</div>
-              <div class="assistant-subtitle">
-                One question at a time. We keep this concise.
+    <main id="main-content">
+      <section class="walkthrough-intro">
+        <div class="container walkthrough-intro-grid">
+          <div class="walkthrough-intro-copy">
+            <h1>Find a sensible place to start.</h1>
+            <p>
+              Answer eight focused questions about the business, the
+              bottleneck, and the operating constraints. The result is a
+              qualitative starting point—not a manufactured readiness score.
+            </p>
+          </div>
+          <aside class="walkthrough-intro-note" aria-label="Walkthrough scope">
+            <p>
+              This walkthrough is for orientation. A real recommendation still
+              requires a conversation and a closer look at the workflow.
+            </p>
+            <dl>
+              <div>
+                <dt>Time</dt>
+                <dd>About two minutes</dd>
               </div>
-            </div>
-          </div>
-          <div class="assistant-message" id="assistantMessage">
-            Ready when you are. Lets start with the basics.
-          </div>
-          <div class="assistant-progress">
-            <div class="progress-ring">
-              <svg viewBox="0 0 120 120">
-                <circle class="progress-track" cx="60" cy="60" r="52"></circle>
-                <circle class="progress-stroke" cx="60" cy="60" r="52"></circle>
-              </svg>
-              <div class="progress-label" id="progressText">1/8</div>
-            </div>
-            <span class="progress-caption">Progress</span>
-          </div>
-        </aside>
+              <div>
+                <dt>Output</dt>
+                <dd>A high-level service path</dd>
+              </div>
+              <div>
+                <dt>Email</dt>
+                <dd>Used to send the requested summary</dd>
+              </div>
+            </dl>
+          </aside>
+        </div>
+      </section>
 
-        <div class="walkthrough-card" id="walkthroughCard">
-          <div class="walkthrough-question" id="questionText"></div>
-          <div class="walkthrough-input">
-            <input
-              type="text"
-              id="answerInput"
-              placeholder="Type your answer here..."
-              autocomplete="off"
-            />
-            <button class="button" id="nextButton" type="button">Next</button>
+      <section class="walkthrough-stage-editorial" id="quizStage">
+        <div class="container walkthrough-layout">
+          <aside class="walkthrough-side" aria-label="Walkthrough progress">
+            <h2>One question at a time.</h2>
+            <p>
+              Concise answers are enough. Use the suggested answers where they
+              fit, or type your own.
+            </p>
+            <div class="walkthrough-progress">
+              <div class="walkthrough-progress-row">
+                <span id="progressText">Question 1 of 8</span>
+                <span id="progressPercent">13%</span>
+              </div>
+              <div class="walkthrough-progress-track" aria-hidden="true">
+                <div
+                  class="walkthrough-progress-bar"
+                  id="progressBar"
+                ></div>
+              </div>
+              <progress
+                class="sr-only"
+                id="progressTrack"
+                max="100"
+                value="13"
+                aria-label="Walkthrough progress"
+              >13%</progress>
+            </div>
+            <p class="walkthrough-message" id="assistantMessage">
+              Start with the shape of the business.
+            </p>
+          </aside>
+
+          <div class="walkthrough-card" id="walkthroughCard">
+            <div id="walkthroughFlow">
+              <p class="walkthrough-question-count" id="questionCount">
+                Question 1
+              </p>
+              <h2 class="walkthrough-question" id="questionText">What type of business are you in?</h2>
+              <div class="walkthrough-answer">
+                <label id="answerLabel" for="answerInput">Your answer</label>
+                <div class="walkthrough-input">
+                  <input
+                    type="text"
+                    id="answerInput"
+                    aria-labelledby="questionText answerLabel"
+                    aria-describedby="answerHelp"
+                    autocomplete="off"
+                  />
+                  <button class="button" id="nextButton" type="button">
+                    Continue
+                  </button>
+                </div>
+                <p class="note" id="answerHelp"></p>
+              </div>
+              <div class="chip-row" id="chipRow"></div>
+              <div class="walkthrough-actions">
+                <button
+                  class="button ghost"
+                  id="backButton"
+                  type="button"
+                >
+                  Back
+                </button>
+                <button
+                  class="button ghost"
+                  id="restartButton"
+                  type="button"
+                >
+                  Start over
+                </button>
+              </div>
+              <div
+                class="walkthrough-status"
+                id="statusText"
+                role="status"
+              ></div>
+            </div>
+            <div class="walkthrough-results" id="results" aria-live="polite" hidden></div>
           </div>
-          <div class="chip-row" id="chipRow"></div>
-          <div class="walkthrough-actions">
-            <button class="button ghost" id="backButton" type="button">Back</button>
-            <button class="button ghost" id="restartButton" type="button">Restart</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <a class="logo" href="/" aria-label="Ross Applied AI home">
+            <span class="logo-mark" aria-hidden="true">RA</span>
+            <span class="logo-type">
+              <strong>Ross Applied</strong>
+              <small>AI consulting · Tulsa</small>
+            </span>
+          </a>
+          <p>
+            Practical AI strategy, implementation, and enablement for Oklahoma
+            businesses.
+          </p>
+        </div>
+        <div>
+          <div class="footer-label">Explore</div>
+          <nav class="list" aria-label="Footer">
+            <a href="/services/">Services</a>
+            <a href="/services/local-search-visibility/">Visibility Sprint</a>
+            <a href="/case-studies/">Project Examples</a>
+            <a href="/blog/">Insights</a>
+          </nav>
+        </div>
+        <div>
+          <div class="footer-label">Contact</div>
+          <div class="list">
+            <span>Tulsa, Oklahoma</span>
+            <a href="mailto:hello@rossapplied.ai">hello@rossapplied.ai</a>
+            <a href="/book-call/">Book a call</a>
           </div>
-          <div class="walkthrough-status" id="statusText"></div>
-          <div class="walkthrough-results" id="results"></div>
         </div>
       </div>
-    </section>
+      <div class="container footer-bottom">
+        <span>© <span data-current-year>2026</span> Ross Applied AI.</span>
+        <span>Strategy · Integration · Training · Implementation</span>
+      </div>
+    </footer>
 
     <script>
       (function () {
@@ -126,69 +222,106 @@
           {
             key: "industry",
             prompt: "What type of business are you in?",
-            chips: ["Professional services", "Healthcare", "Real estate", "Construction"]
+            message: "Start with the shape of the business.",
+            chips: [
+              "Professional services",
+              "Healthcare",
+              "Real estate",
+              "Construction"
+            ]
           },
           {
             key: "team_size",
             prompt: "Roughly how big is your team?",
-            chips: ["1-5", "6-15", "16-50", "50+"]
+            message: "Team size helps frame adoption and training needs.",
+            chips: ["1–5", "6–15", "16–50", "50+"]
           },
           {
             key: "email",
-            prompt: "Where should we send your walkthrough summary?"
+            prompt: "What email should receive the walkthrough summary?",
+            message: "This address is included in the request to send the summary."
           },
           {
             key: "pain_points",
-            prompt: "Whats the biggest operational bottleneck right now?",
-            chips: ["Manual admin", "Slow response time", "Data scattered", "Lead follow-up"]
+            prompt: "What is the biggest operational bottleneck right now?",
+            message: "Name the friction before choosing the technology.",
+            chips: [
+              "Manual admin",
+              "Slow response time",
+              "Data is scattered",
+              "Lead follow-up"
+            ]
           },
           {
             key: "tools",
-            prompt: "What tools or systems do you use daily?"
+            prompt: "What tools or systems does the team use every day?",
+            message: "The best solution usually fits the current operating stack."
           },
           {
             key: "goals",
-            prompt: "What outcome do you want AI to deliver in the next 90 days?",
-            chips: ["Save time", "Increase revenue", "Improve quality", "Reduce cost"]
+            prompt: "What outcome matters most in the next 90 days?",
+            message: "A useful outcome is specific enough to observe.",
+            chips: [
+              "Save time",
+              "Increase revenue",
+              "Improve quality",
+              "Reduce cost"
+            ]
           },
           {
             key: "timeline",
-            prompt: "How urgent is this? (ASAP, 30 days, 60 days, 90+ days)",
-            chips: ["ASAP", "30 days", "60 days", "90+ days"]
+            prompt: "How urgent is the work?",
+            message: "Urgency changes the right scope and starting point.",
+            chips: ["As soon as possible", "30 days", "60 days", "90+ days"]
           },
           {
             key: "budget",
-            prompt: "Do you have a budget range in mind?",
-            chips: ["Under $2k", "$2k-$5k", "$5k-$15k", "$15k+"]
+            prompt: "Is there a working budget range?",
+            message: "A range helps keep the recommendation realistic.",
+            chips: ["Under $2k", "$2k–$5k", "$5k–$15k", "$15k+"]
           }
         ];
 
         var currentIndex = 0;
         var answers = {};
 
+        var questionCount = document.getElementById("questionCount");
         var questionText = document.getElementById("questionText");
         var answerInput = document.getElementById("answerInput");
+        var answerHelp = document.getElementById("answerHelp");
         var nextButton = document.getElementById("nextButton");
         var backButton = document.getElementById("backButton");
         var restartButton = document.getElementById("restartButton");
         var statusText = document.getElementById("statusText");
         var results = document.getElementById("results");
+        var flow = document.getElementById("walkthroughFlow");
         var assistantMessage = document.getElementById("assistantMessage");
         var progressText = document.getElementById("progressText");
+        var progressPercent = document.getElementById("progressPercent");
+        var progressBar = document.getElementById("progressBar");
+        var progressTrack = document.getElementById("progressTrack");
         var chipRow = document.getElementById("chipRow");
-        var walkthroughCard = document.getElementById("walkthroughCard");
+
+        function createElement(tag, className, text) {
+          var element = document.createElement(tag);
+          if (className) {
+            element.className = className;
+          }
+          if (typeof text === "string") {
+            element.textContent = text;
+          }
+          return element;
+        }
 
         function updateProgress() {
           var step = currentIndex + 1;
-          progressText.textContent = step + "/" + questions.length;
           var percent = Math.round((step / questions.length) * 100);
-          var stroke = document.querySelector(".progress-stroke");
-          if (stroke) {
-            var circumference = 2 * Math.PI * 52;
-            var offset = circumference - (percent / 100) * circumference;
-            stroke.style.strokeDasharray = circumference;
-            stroke.style.strokeDashoffset = offset;
-          }
+          progressText.textContent =
+            "Question " + step + " of " + questions.length;
+          progressPercent.textContent = percent + "%";
+          progressBar.style.width = percent + "%";
+          progressTrack.value = percent;
+          questionCount.textContent = "Question " + step;
         }
 
         function isValidEmail(value) {
@@ -196,169 +329,229 @@
         }
 
         function collectAnswers() {
-          return questions.map(function (q) {
+          return questions.map(function (question) {
             return {
-              key: q.key,
-              question: q.prompt,
-              answer: answers[q.key] || ""
+              key: question.key,
+              question: question.prompt,
+              answer: answers[question.key] || ""
             };
           });
         }
 
-        function calculateScore() {
-          var filled = questions.reduce(function (count, q) {
-            return answers[q.key] ? count + 1 : count;
-          }, 0);
-          var completionBoost = Math.round((filled / questions.length) * 10);
-          var answerSeed = questions
-            .map(function (q) {
-              return String(answers[q.key] || "").toLowerCase().trim();
-            })
-            .join("|");
-          var hash = 0;
-          for (var i = 0; i < answerSeed.length; i += 1) {
-            hash = (hash * 31 + answerSeed.charCodeAt(i)) % 100000;
-          }
-          var variance = hash % 9; // 0-8
-          var score = 80 + completionBoost + variance;
-
-          if (filled === questions.length && score < 90) {
-            score = 90 + (variance % 4);
-          }
-          if (score > 98) {
-            score = 98;
-          }
-          return score;
-        }
-
         function buildClientFallback() {
-          var goals = answers.goals || "your goals";
-          var urgency = answers.timeline || "your timeline";
-          var summary =
-            "Based on what you shared, there are clear opportunities to apply AI " +
-            "to reduce friction and deliver measurable progress toward " + goals + ". " +
-            "We recommend starting with a focused assessment, then implementing " +
-            "one high-impact workflow aligned to " + urgency + ".";
+          var goal = answers.goals || "the stated business goal";
+          var timeline = answers.timeline || "the stated timeline";
           return {
-            summary: summary,
-            recommended_services: ["AI Strategy Assessment", "AI Integration"],
+            summary:
+              "A focused assessment is the most defensible first step. It can clarify where AI is useful, what the current systems can support, and which single workflow is worth testing against " +
+              goal +
+              " within " +
+              timeline +
+              ".",
+            recommended_services: [
+              "AI Strategy Assessment",
+              "AI Integration"
+            ],
             suggested_next_step:
-              "Book a call to map the assessment and a 90-day execution plan."
+              "Discuss the bottleneck, current tools, and a practical definition of success.",
+            email_error:
+              "The walkthrough service was unavailable, so no email was sent."
           };
         }
 
         function renderChips(question) {
-          chipRow.innerHTML = "";
-          if (!question.chips || !question.chips.length) {
+          chipRow.replaceChildren();
+
+          if (!question.chips) {
             return;
           }
+
           question.chips.forEach(function (chipValue) {
-            var btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "chip-option";
-            btn.textContent = chipValue;
-            btn.addEventListener("click", function () {
+            var button = createElement("button", "chip-option", chipValue);
+            button.type = "button";
+            button.addEventListener("click", function () {
               answerInput.value = chipValue;
               nextButton.click();
             });
-            chipRow.appendChild(btn);
+            chipRow.appendChild(button);
           });
         }
 
-        function showQuestion() {
+        function showQuestion(shouldFocus) {
           var current = questions[currentIndex];
-          walkthroughCard.classList.remove("transition-in");
-          void walkthroughCard.offsetWidth;
-          walkthroughCard.classList.add("transition-in");
+          flow.hidden = false;
+          results.hidden = true;
+          results.replaceChildren();
           questionText.textContent = current.prompt;
           answerInput.value = answers[current.key] || "";
+          answerInput.type = current.key === "email" ? "email" : "text";
+          answerInput.autocomplete =
+            current.key === "email" ? "email" : "off";
+          answerInput.placeholder =
+            current.key === "email" ? "you@example.com" : "Type a concise answer";
+          answerHelp.textContent =
+            current.key === "email"
+              ? "Continuing sends this address with your answers so the requested summary can be delivered."
+              : "";
           statusText.textContent = "";
-          results.innerHTML = "";
-          assistantMessage.textContent =
-            "Tell me about your " + current.key.replace("_", " ") + ".";
+          assistantMessage.textContent = current.message;
           renderChips(current);
           updateProgress();
           backButton.disabled = currentIndex === 0;
-          answerInput.focus({ preventScroll: true });
+          nextButton.textContent =
+            currentIndex === questions.length - 1
+              ? "Create starting point"
+              : "Continue";
+          if (shouldFocus !== false) {
+            answerInput.focus();
+          }
+        }
+
+        function addResultAction(container, href, text, secondary) {
+          var link = createElement(
+            "a",
+            secondary ? "button ghost" : "button",
+            text
+          );
+          link.href = href;
+          container.appendChild(link);
         }
 
         function renderResults(data) {
           var services = Array.isArray(data.recommended_services)
             ? data.recommended_services
             : [];
-          var emailedTo = data.emailed_to ? String(data.emailed_to) : "";
-          var emailError = data.email_error ? String(data.email_error) : "";
-          var servicesHtml = services
-            .map(function (service) {
-              return '<span class="result-chip">' + service + "</span>";
-            })
-            .join(" ");
-          var emailBadge = emailedTo
-            ? '<div class="email-success reveal-step">Email sent to ' + emailedTo + ".</div>"
-            : "";
-          var emailWarning = emailError
-            ? '<div class="email-warning reveal-step">We could not send the email. You can still book a call.</div>'
-            : "";
-          var score = calculateScore();
+          var section = createElement("section", "result-card");
+          section.tabIndex = -1;
+          section.setAttribute("aria-labelledby", "walkthroughResultTitle");
 
-          results.innerHTML =
-            '<div class="result-card">' +
-            emailBadge +
-            emailWarning +
-            '<div class="report-header reveal-step delay-1">' +
-            "<div>" +
-            '<div class="report-kicker">AI Opportunity Score</div>' +
-            '<div class="report-score">' + score + "<span>/100</span></div>" +
-            "</div>" +
-            '<div class="report-pill">Recommendation Ready</div>' +
-            "</div>" +
-            '<h3 class="reveal-step delay-2">Recommended path</h3>' +
-            '<p class="reveal-step delay-2">' + (data.summary || "Heres a tailored recommendation.") + "</p>" +
-            '<div class="result-services reveal-step delay-3">' + servicesHtml + "</div>" +
-            '<div class="report-grid reveal-step delay-4">' +
-            '<div class="report-card"><h4>Why now</h4><p>Your answers indicate immediate operational gains from targeted automation.</p></div>' +
-            '<div class="report-card"><h4>90-day plan</h4><p>Assessment, implementation, and launch in a phased timeline with measurable checkpoints.</p></div>' +
-            "</div>" +
-            '<div class="timeline reveal-step delay-5">' +
-            '<div class="timeline-step"><span>Week 1</span><strong>Assessment</strong></div>' +
-            '<div class="timeline-step"><span>Week 2-3</span><strong>Build</strong></div>' +
-            '<div class="timeline-step"><span>Week 4</span><strong>Launch</strong></div>' +
-            "</div>" +
-            '<p class="reveal-step delay-6"><strong>Next step:</strong> ' +
-            (data.suggested_next_step || "Book a call to map the plan.") +
-            "</p>" +
-            '<div class="result-cta reveal-step delay-6">' +
-            '<a class="button" href="/book-call/">Book a Call</a>' +
-            '<a class="button ghost" href="/contact/">Email Us</a>' +
-            "</div>" +
-            "</div>";
+          if (data.emailed_to) {
+            section.appendChild(
+              createElement(
+                "p",
+                "walkthrough-email-status",
+                "Summary sent to " + String(data.emailed_to) + "."
+              )
+            );
+          } else if (data.email_error) {
+            section.appendChild(
+              createElement(
+                "p",
+                "walkthrough-email-status",
+                "The email could not be sent. The recommendation remains available here."
+              )
+            );
+          }
 
-          document.body.classList.add("report-ready");
-          results.scrollIntoView({ behavior: "smooth", block: "start" });
+          section.appendChild(
+            createElement("h3", "", "A sensible starting point")
+          );
+          section.querySelector("h3").id = "walkthroughResultTitle";
+          section.appendChild(
+            createElement(
+              "p",
+              "",
+              String(
+                data.summary ||
+                  "Start with a focused assessment before selecting a tool."
+              )
+            )
+          );
+
+          if (services.length) {
+            var serviceList = createElement(
+              "div",
+              "walkthrough-result-services"
+            );
+            services.forEach(function (service) {
+              serviceList.appendChild(
+                createElement(
+                  "div",
+                  "walkthrough-result-service",
+                  String(service)
+                )
+              );
+            });
+            section.appendChild(serviceList);
+          }
+
+          var disclosure = createElement("div", "walkthrough-disclosure");
+          disclosure.appendChild(
+            createElement("strong", "", "What this result is")
+          );
+          disclosure.appendChild(
+            createElement(
+              "p",
+              "",
+              "A qualitative orientation based on the answers provided. It is not a readiness score, performance forecast, or implementation guarantee."
+            )
+          );
+          section.appendChild(disclosure);
+
+          var nextStep = createElement("p");
+          nextStep.appendChild(createElement("strong", "", "Suggested next step: "));
+          nextStep.appendChild(
+            document.createTextNode(
+              String(
+                data.suggested_next_step ||
+                  "Book a call to examine the workflow in more detail."
+              )
+            )
+          );
+          section.appendChild(nextStep);
+
+          var actions = createElement(
+            "div",
+            "walkthrough-result-actions"
+          );
+          addResultAction(actions, "/book-call/", "Book a call", false);
+          addResultAction(actions, "/contact/", "Send a note", true);
+
+          var againButton = createElement(
+            "button",
+            "button ghost",
+            "Start over"
+          );
+          againButton.type = "button";
+          againButton.addEventListener("click", restart);
+          actions.appendChild(againButton);
+          section.appendChild(actions);
+
+          results.replaceChildren(section);
+          flow.hidden = true;
+          results.hidden = false;
+          section.focus({ preventScroll: true });
+          assistantMessage.textContent =
+            "The result is ready. Treat it as a starting hypothesis.";
+
+          results.scrollIntoView({
+            behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
+              .matches
+              ? "auto"
+              : "smooth",
+            block: "start"
+          });
         }
 
         async function finish() {
-          statusText.textContent = "Analyzing your answers...";
+          statusText.textContent = "Preparing a qualitative recommendation…";
           nextButton.disabled = true;
           backButton.disabled = true;
+
           try {
             var response = await fetch("/api/walkthrough", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ answers: collectAnswers() })
             });
+
             if (!response.ok) {
               throw new Error("Walkthrough request failed");
             }
-            var data = await response.json();
-            renderResults(data);
-            assistantMessage.textContent =
-              "Report complete. You can now book your strategy call.";
+
+            renderResults(await response.json());
           } catch (error) {
-            var fallback = buildClientFallback();
-            renderResults(fallback);
-            assistantMessage.textContent =
-              "Report complete using fallback mode.";
+            renderResults(buildClientFallback());
           } finally {
             statusText.textContent = "";
             nextButton.disabled = false;
@@ -366,43 +559,20 @@
           }
         }
 
-        function applyScrollEffects() {
-          var y = window.scrollY || 0;
-          document.documentElement.style.setProperty("--walkthrough-scroll", y);
-        }
-
-        function setupRevealObserver() {
-          var nodes = document.querySelectorAll(".reveal-on-scroll");
-          if (!("IntersectionObserver" in window) || !nodes.length) {
-            return;
-          }
-          var observer = new IntersectionObserver(
-            function (entries) {
-              entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                  entry.target.classList.add("in-view");
-                  observer.unobserve(entry.target);
-                }
-              });
-            },
-            { threshold: 0.2 }
-          );
-          nodes.forEach(function (node) {
-            observer.observe(node);
-          });
-        }
-
-        nextButton.addEventListener("click", function () {
+        function submitCurrent() {
           var current = questions[currentIndex];
           var value = answerInput.value.trim();
+
           if (!value) {
-            statusText.textContent = "Please add a quick answer to continue.";
+            statusText.textContent = "Add a brief answer to continue.";
             return;
           }
+
           if (current.key === "email" && !isValidEmail(value)) {
-            statusText.textContent = "Please enter a valid email address.";
+            statusText.textContent = "Enter a valid email address.";
             return;
           }
+
           answers[current.key] = value;
           if (currentIndex < questions.length - 1) {
             currentIndex += 1;
@@ -410,36 +580,36 @@
           } else {
             finish();
           }
-        });
+        }
+
+        function restart() {
+          currentIndex = 0;
+          answers = {};
+          showQuestion();
+        }
+
+        nextButton.addEventListener("click", submitCurrent);
 
         backButton.addEventListener("click", function () {
           if (currentIndex === 0) {
             return;
           }
-          var current = questions[currentIndex];
-          answers[current.key] = answerInput.value.trim();
+
+          answers[questions[currentIndex].key] = answerInput.value.trim();
           currentIndex -= 1;
           showQuestion();
         });
 
-        restartButton.addEventListener("click", function () {
-          currentIndex = 0;
-          answers = {};
-          document.body.classList.remove("report-ready");
-          showQuestion();
-        });
+        restartButton.addEventListener("click", restart);
 
         answerInput.addEventListener("keydown", function (event) {
           if (event.key === "Enter") {
             event.preventDefault();
-            nextButton.click();
+            submitCurrent();
           }
         });
 
-        window.addEventListener("scroll", applyScrollEffects, { passive: true });
-        setupRevealObserver();
-        applyScrollEffects();
-        showQuestion();
+        showQuestion(false);
       })();
     </script>
   </body>

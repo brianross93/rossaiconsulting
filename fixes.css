@@ -1,0 +1,39 @@
+.eyebrow {
+  display: none !important;
+}
+
+.skip-link {
+  background: var(--ra-ink);
+  color: var(--ra-white);
+  font-size: 0.82rem;
+  font-weight: 700;
+  left: 16px;
+  padding: 11px 14px;
+  position: fixed;
+  top: -80px;
+  transition: top 140ms ease;
+  z-index: 120;
+}
+
+.skip-link:focus {
+  top: 14px;
+}
+
+html.menu-open {
+  overflow: hidden;
+}
+
+.calendly-inline-widget {
+  min-width: 0 !important;
+  width: 100%;
+}
+
+@media (max-width: 980px) {
+  .walkthrough-page .walkthrough-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .walkthrough-page .walkthrough-card {
+    min-width: 0;
+  }
+}
