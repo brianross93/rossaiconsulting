@@ -10,6 +10,17 @@
   --ra-line: #d8d4c9;
   --ra-line-dark: #b9b4a8;
   --ra-muted: #66717a;
+  --ink: var(--ra-ink);
+  --ink-soft: var(--ra-ink-soft);
+  --paper: var(--ra-paper);
+  --canvas: var(--ra-canvas);
+  --white: var(--ra-white);
+  --rust: var(--ra-rust);
+  --rust-deep: var(--ra-rust-dark);
+  --teal: var(--ra-sage);
+  --teal-deep: #385950;
+  --line: var(--ra-line);
+  --line-strong: var(--ra-line-dark);
   --ra-serif: "Newsreader", Georgia, "Times New Roman", serif;
   --ra-sans: "DM Sans", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   --ra-container: 1180px;
@@ -118,6 +129,11 @@ textarea:focus-visible {
   grid-template-columns: 38px auto;
   line-height: 1;
   min-width: max-content;
+}
+
+.logo::before {
+  content: none;
+  display: none;
 }
 
 .logo:hover {
@@ -409,7 +425,9 @@ body:not(.walkthrough-page) h3 {
 }
 
 .hero::after {
+  background: transparent;
   border-left: 1px solid rgba(17, 39, 61, 0.09);
+  height: auto;
   border-right: 1px solid rgba(17, 39, 61, 0.09);
   content: "";
   inset: 0 max(24px, calc((100vw - var(--ra-container)) / 2)) 0 auto;
