@@ -1,0 +1,389 @@
+.walkthrough-page.walkthrough-editorial {
+  background: var(--ra-canvas);
+  color: var(--ra-ink);
+  font-family: var(--ra-sans);
+}
+
+.walkthrough-page.walkthrough-editorial .nav {
+  background: rgba(244, 241, 233, 0.96);
+  border-bottom: 1px solid var(--ra-line);
+}
+
+.walkthrough-page.walkthrough-editorial .nav .logo,
+.walkthrough-page.walkthrough-editorial .nav-links,
+.walkthrough-page.walkthrough-editorial .nav-links a {
+  color: var(--ra-ink);
+}
+
+.walkthrough-page.walkthrough-editorial .nav .logo-mark {
+  background: var(--ra-ink);
+  color: var(--ra-paper);
+}
+
+.walkthrough-page.walkthrough-editorial .nav .logo-type small {
+  color: var(--ra-muted);
+}
+
+.walkthrough-page.walkthrough-editorial .nav-toggle {
+  border-color: var(--ra-line-dark);
+  color: var(--ra-ink);
+}
+
+.walkthrough-page.walkthrough-editorial h1,
+.walkthrough-page.walkthrough-editorial h2,
+.walkthrough-page.walkthrough-editorial h3,
+.walkthrough-page.walkthrough-editorial h4 {
+  color: var(--ra-ink);
+  font-family: var(--ra-serif);
+  letter-spacing: -0.035em;
+}
+
+.walkthrough-intro {
+  background: var(--ra-paper);
+  border-bottom: 1px solid var(--ra-line);
+  padding: clamp(72px, 10vw, 130px) 0 clamp(62px, 8vw, 100px);
+}
+
+.walkthrough-intro-grid {
+  align-items: end;
+  display: grid;
+  gap: clamp(40px, 7vw, 90px);
+  grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+}
+
+.walkthrough-intro h1 {
+  font-size: clamp(3.5rem, 8vw, 7rem);
+  line-height: 0.94;
+  max-width: 9ch;
+}
+
+.walkthrough-intro-copy > p {
+  color: var(--ra-ink-soft);
+  font-size: clamp(1.05rem, 1.7vw, 1.24rem);
+  margin-top: 26px;
+  max-width: 56ch;
+}
+
+.walkthrough-intro-note {
+  border-block: 1px solid var(--ra-line-dark);
+  padding: 24px 0;
+}
+
+.walkthrough-intro-note p {
+  color: var(--ra-ink-soft);
+  margin-bottom: 20px;
+}
+
+.walkthrough-intro-note dl {
+  display: grid;
+  gap: 0;
+}
+
+.walkthrough-intro-note div {
+  border-top: 1px solid var(--ra-line);
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 96px 1fr;
+  padding: 12px 0;
+}
+
+.walkthrough-intro-note dt {
+  color: var(--ra-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.walkthrough-intro-note dd {
+  margin: 0;
+}
+
+.walkthrough-stage-editorial {
+  background: var(--ra-canvas);
+  padding: clamp(70px, 9vw, 112px) 0;
+}
+
+.walkthrough-page.walkthrough-editorial .walkthrough-layout {
+  align-items: start;
+  display: grid;
+  gap: clamp(40px, 7vw, 82px);
+  grid-template-columns: minmax(230px, 0.55fr) minmax(0, 1.45fr);
+}
+
+.walkthrough-side {
+  position: sticky;
+  top: calc(var(--ra-nav-height) + 28px);
+}
+
+.walkthrough-side h2 {
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  line-height: 1.02;
+  margin-bottom: 16px;
+}
+
+.walkthrough-side > p {
+  color: var(--ra-ink-soft);
+}
+
+.walkthrough-progress {
+  border-top: 1px solid var(--ra-line-dark);
+  margin-top: 32px;
+  padding-top: 16px;
+}
+
+.walkthrough-progress-row {
+  align-items: center;
+  display: flex;
+  font-size: 0.78rem;
+  font-weight: 650;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.walkthrough-progress-track {
+  background: var(--ra-line);
+  height: 3px;
+  overflow: hidden;
+}
+
+.walkthrough-progress-bar {
+  background: var(--ra-rust);
+  height: 100%;
+  transform-origin: left;
+  transition: width 260ms var(--ra-ease);
+  width: 12.5%;
+}
+
+.walkthrough-message {
+  border-left: 2px solid var(--ra-sage);
+  color: var(--ra-ink-soft);
+  font-size: 0.9rem;
+  margin-top: 22px;
+  padding-left: 12px;
+}
+
+.result-card:focus {
+  outline: 2px solid var(--ra-paper);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--ra-ink);
+}
+
+.walkthrough-page.walkthrough-editorial .walkthrough-card {
+  animation: none;
+  backdrop-filter: none;
+  background: var(--ra-white);
+  border: 1px solid var(--ra-line-dark);
+  border-radius: 2px;
+  box-shadow: none;
+  display: grid;
+  gap: 22px;
+  min-height: 460px;
+  padding: clamp(28px, 5vw, 56px);
+}
+
+.walkthrough-question-count {
+  color: var(--ra-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.walkthrough-page.walkthrough-editorial .walkthrough-question {
+  color: var(--ra-ink);
+  font-family: var(--ra-serif);
+  font-size: clamp(2rem, 4vw, 3.7rem);
+  font-weight: 560;
+  line-height: 1.02;
+  max-width: 16ch;
+}
+
+.walkthrough-answer {
+  display: grid;
+  gap: 8px;
+}
+
+.walkthrough-answer label {
+  color: var(--ra-ink-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.walkthrough-page.walkthrough-editorial .walkthrough-input {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.walkthrough-page.walkthrough-editorial .walkthrough-input input {
+  background: var(--ra-canvas);
+  border: 1px solid var(--ra-line-dark);
+  border-radius: 0;
+  box-shadow: none;
+  color: var(--ra-ink);
+  font-family: var(--ra-sans);
+  font-size: 1rem;
+  min-height: 54px;
+  padding: 13px 14px;
+}
+
+.walkthrough-page.walkthrough-editorial .walkthrough-input input:focus {
+  border-color: var(--ra-rust);
+  box-shadow: inset 3px 0 var(--ra-rust);
+  outline: 0;
+}
+
+.walkthrough-page.walkthrough-editorial .chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.walkthrough-page.walkthrough-editorial .chip-option {
+  background: transparent;
+  border: 1px solid var(--ra-line-dark);
+  border-radius: 2px;
+  color: var(--ra-ink);
+  font: 600 0.82rem/1 var(--ra-sans);
+  padding: 10px 12px;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+.walkthrough-page.walkthrough-editorial .chip-option:hover,
+.walkthrough-page.walkthrough-editorial .chip-option:focus {
+  background: var(--ra-ink);
+  border-color: var(--ra-ink);
+  color: var(--ra-white);
+  transform: none;
+}
+
+.walkthrough-page.walkthrough-editorial .walkthrough-actions {
+  border-top: 1px solid var(--ra-line);
+  display: flex;
+  gap: 9px;
+  margin-top: auto;
+  padding-top: 18px;
+}
+
+.walkthrough-page.walkthrough-editorial .walkthrough-status {
+  color: var(--ra-rust-dark);
+  font-size: 0.86rem;
+  min-height: 1.4em;
+}
+
+.walkthrough-page.walkthrough-editorial .result-card {
+  animation: none;
+  background: var(--ra-white);
+  border: 0;
+  border-top: 3px solid var(--ra-rust);
+  border-radius: 0;
+  box-shadow: none;
+  display: grid;
+  gap: 20px;
+  margin-top: 0;
+  padding: 0;
+  padding-top: 26px;
+}
+
+.walkthrough-page.walkthrough-editorial .result-card h3 {
+  font-size: clamp(2rem, 4vw, 3.2rem);
+}
+
+.walkthrough-page.walkthrough-editorial .result-card p {
+  color: var(--ra-ink-soft);
+}
+
+.walkthrough-result-services {
+  border-block: 1px solid var(--ra-line);
+  display: grid;
+}
+
+.walkthrough-result-service {
+  border-bottom: 1px solid var(--ra-line);
+  color: var(--ra-ink);
+  padding: 12px 0;
+}
+
+.walkthrough-result-service:last-child {
+  border-bottom: 0;
+}
+
+.walkthrough-disclosure {
+  background: var(--ra-paper);
+  border-left: 3px solid var(--ra-sage);
+  padding: 16px 18px;
+}
+
+.walkthrough-disclosure strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.walkthrough-email-status {
+  color: var(--ra-sage);
+  font-size: 0.84rem;
+  font-weight: 650;
+}
+
+.walkthrough-result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+@media (max-width: 980px) {
+  .walkthrough-page.walkthrough-editorial .nav-links {
+    background: var(--ra-paper);
+    border-color: var(--ra-line);
+  }
+
+  .walkthrough-page.walkthrough-editorial .nav-links a {
+    border-bottom-color: var(--ra-line);
+    color: var(--ra-ink);
+  }
+
+  .walkthrough-intro-grid,
+  .walkthrough-page.walkthrough-editorial .walkthrough-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .walkthrough-side {
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .walkthrough-intro {
+    padding: 62px 0;
+  }
+
+  .walkthrough-intro h1 {
+    font-size: clamp(3.3rem, 18vw, 5rem);
+  }
+
+  .walkthrough-stage-editorial {
+    padding: 64px 0;
+  }
+
+  .result-card:focus {
+  outline: 2px solid var(--ra-paper);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px var(--ra-ink);
+}
+
+.walkthrough-page.walkthrough-editorial .walkthrough-card {
+    min-height: 0;
+    padding: 24px 18px;
+  }
+
+  .walkthrough-page.walkthrough-editorial .walkthrough-input {
+    grid-template-columns: 1fr;
+  }
+
+  .walkthrough-page.walkthrough-editorial .walkthrough-input .button {
+    width: 100%;
+  }
+}

@@ -52,6 +52,61 @@ app.use(express.static(__dirname));
 const rateLimitStore = new Map();
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX = 20;
+const WALKTHROUGH_MAX_ANSWERS = 8;
+const WALKTHROUGH_MAX_QUESTION_LENGTH = 240;
+const WALKTHROUGH_MAX_ANSWER_LENGTH = 1200;
+const WALKTHROUGH_ALLOWED_KEYS = new Set([
+  "industry",
+  "team_size",
+  "email",
+  "pain_points",
+  "tools",
+  "goals",
+  "timeline",
+  "budget"
+]);
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+function getClientIp(req) {
+  const forwarded = req.headers["x-forwarded-for"];
+  const rawIp = Array.isArray(forwarded)
+    ? forwarded[0]
+    : String(forwarded || req.socket.remoteAddress || "unknown").split(",")[0];
+  return rawIp.trim() || "unknown";
+}
+
+function enforceRateLimit(req, res, scope) {
+  const key = `${scope}:${getClientIp(req)}`;
+  const now = Date.now();
+  const entry = rateLimitStore.get(key) || {
+    count: 0,
+    resetAt: now + RATE_LIMIT_WINDOW_MS
+  };
+
+  if (now > entry.resetAt) {
+    entry.count = 0;
+    entry.resetAt = now + RATE_LIMIT_WINDOW_MS;
+  }
+
+  entry.count += 1;
+  rateLimitStore.set(key, entry);
+
+  if (entry.count > RATE_LIMIT_MAX) {
+    res.status(429).json({ error: "Rate limit exceeded. Try again soon." });
+    return false;
+  }
+
+  return true;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
 
 const timezoneMap = {
   est: "America/New_York",
@@ -125,17 +180,8 @@ app.post("/api/chat", async (req, res) => {
       return res.status(500).json({ error: "Missing OPEN_AI_KEY." });
     }
 
-    const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress || "unknown";
-    const now = Date.now();
-    const entry = rateLimitStore.get(ip) || { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS };
-    if (now > entry.resetAt) {
-      entry.count = 0;
-      entry.resetAt = now + RATE_LIMIT_WINDOW_MS;
-    }
-    entry.count += 1;
-    rateLimitStore.set(ip, entry);
-    if (entry.count > RATE_LIMIT_MAX) {
-      return res.status(429).json({ error: "Rate limit exceeded. Try again soon." });
+    if (!enforceRateLimit(req, res, "chat")) {
+      return;
     }
 
     const message = String(req.body?.message || "").trim();
@@ -152,9 +198,26 @@ app.post("/api/chat", async (req, res) => {
       "Keep replies concise, friendly, and business-focused.",
       "If asked about booking, direct them to https://rossapplied.ai/book-call/.",
       "If asked about email, provide hello@rossapplied.ai.",
-      "If asked about services, list: AI Strategy Assessment, AI Integration,",
-      "Custom AI Development, AI Training & Enablement, Ongoing AI Support,",
-      "Talks & Presentations.",
+      "If asked about services, list: Local Search Visibility Fix Sprint,",
+      "AI Strategy Assessment, AI Integration, Custom AI Development,",
+      "AI Training & Enablement, Ongoing AI Support, and Talks & Presentations.",
+      "The Local Search Visibility Fix Sprint has a dedicated page at",
+      "https://rossapplied.ai/services/local-search-visibility/.",
+      "The only published pricing facts you may state are:",
+      "the Local Search Visibility Fix Sprint founding pilot is $500,",
+      "its standard price later is $1,250, and 50% is due upfront;",
+      "Starter is $1,750; Growth is $7,500; Enterprise is $20,000+;",
+      "the ongoing support retainer is $1,500/month;",
+      "Talks & Presentations says Tulsa-area keynotes start at $500.",
+      "For packages and the retainer, link to https://rossapplied.ai/services/.",
+      "For talks, link to https://rossapplied.ai/services/talks/.",
+      "Repeat those prices exactly when relevant and link to the corresponding service page.",
+      "Never invent, estimate, alter, round, discount, or convert a price.",
+      "For any pricing question not covered by those published facts, say pricing is",
+      "not published and direct the visitor to https://rossapplied.ai/services/",
+      "or https://rossapplied.ai/book-call/.",
+      "Do not claim the founding pilot is available unless the public page says so.",
+      "Do not invent client results, rankings, availability, timelines, or guarantees.",
       "If unsure, suggest booking a free intro call."
     ].join(" ");
 
@@ -183,32 +246,80 @@ app.post("/api/chat", async (req, res) => {
 
 app.post("/api/walkthrough", async (req, res) => {
   try {
-    const payload = req.body || {};
-    const answers = Array.isArray(payload.answers) ? payload.answers : [];
-    if (answers.length === 0) {
-      return res.status(400).json({ error: "Answers are required." });
+    if (!enforceRateLimit(req, res, "walkthrough")) {
+      return;
     }
 
-    const emailFromKey = answers.find(
-      (item) => String(item?.key || "").toLowerCase() === "email"
-    );
-    const emailFromQuestion = answers.find((item) =>
-      String(item?.question || "").toLowerCase().includes("email")
-    );
-    const emailFromAnswerPattern = answers.find((item) =>
-      /[^\s@]+@[^\s@]+\.[^\s@]+/.test(String(item?.answer || ""))
-    );
+    const payload = req.body || {};
+    if (payload.answers !== undefined && !Array.isArray(payload.answers)) {
+      return res.status(400).json({ error: "Answers must be an array." });
+    }
 
+    const rawAnswers = Array.isArray(payload.answers) ? payload.answers : [];
+    if (rawAnswers.length === 0) {
+      return res.status(400).json({ error: "Answers are required." });
+    }
+    if (rawAnswers.length > WALKTHROUGH_MAX_ANSWERS) {
+      return res.status(400).json({ error: "Too many answers." });
+    }
+
+    const answers = [];
+    const seenKeys = new Set();
+    for (const [index, item] of rawAnswers.entries()) {
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        return res.status(400).json({ error: `Answer ${index + 1} is invalid.` });
+      }
+      if (
+        typeof item.key !== "string" ||
+        typeof item.question !== "string" ||
+        typeof item.answer !== "string"
+      ) {
+        return res.status(400).json({ error: `Answer ${index + 1} has invalid fields.` });
+      }
+
+      const key = item.key.trim().toLowerCase();
+      const question = item.question.trim();
+      const answer = item.answer.trim();
+
+      if (!WALKTHROUGH_ALLOWED_KEYS.has(key)) {
+        return res.status(400).json({ error: `Answer ${index + 1} has an invalid key.` });
+      }
+      if (seenKeys.has(key)) {
+        return res.status(400).json({ error: `Answer key "${key}" is duplicated.` });
+      }
+      if (!question || question.length > WALKTHROUGH_MAX_QUESTION_LENGTH) {
+        return res.status(400).json({ error: `Answer ${index + 1} has an invalid question.` });
+      }
+      if (!answer || answer.length > WALKTHROUGH_MAX_ANSWER_LENGTH) {
+        return res.status(400).json({ error: `Answer ${index + 1} has an invalid response.` });
+      }
+
+      seenKeys.add(key);
+      answers.push({ key, question, answer });
+    }
+
+    const emailFromKey = answers.find((item) => item.key === "email");
+    const emailFromQuestion = answers.find((item) =>
+      item.question.toLowerCase().includes("email")
+    );
+    const emailFromAnswerPattern = answers.find((item) => EMAIL_PATTERN.test(item.answer));
     const userEmail = String(
       emailFromKey?.answer || emailFromQuestion?.answer || emailFromAnswerPattern?.answer || ""
     ).trim();
+
+    if (userEmail && (userEmail.length > 254 || !EMAIL_PATTERN.test(userEmail))) {
+      return res.status(400).json({ error: "A valid email address is required." });
+    }
 
     const systemPrompt = [
       "You are the Ross Applied AI Consulting walkthrough assistant.",
       "Extract key business details from the user's answers and recommend",
       "the most relevant services we offer.",
-      "Services: AI Strategy Assessment, AI Integration, Custom AI Development,",
-      "AI Training & Enablement, Ongoing AI Support, Talks & Presentations.",
+      "Services: Local Search Visibility Fix Sprint, AI Strategy Assessment,",
+      "AI Integration, Custom AI Development, AI Training & Enablement,",
+      "Ongoing AI Support, and Talks & Presentations.",
+      "Recommendations must be qualitative. Do not produce readiness scores,",
+      "performance forecasts, fabricated metrics, or guaranteed outcomes.",
       "Return ONLY valid JSON with this schema:",
       "{",
       '  "summary": string,',
@@ -231,15 +342,30 @@ app.post("/api/walkthrough", async (req, res) => {
 
     function buildFallbackReport() {
       const toLower = (value) => String(value || "").toLowerCase();
-      const findAnswer = (key) =>
-        answers.find((item) => String(item.question || "").toLowerCase().includes(key));
-      const industry = (findAnswer("business") || {}).answer || "unknown";
-      const teamSize = (findAnswer("team") || {}).answer || "unknown";
-      const painPoints = (findAnswer("bottleneck") || {}).answer || "unknown";
-      const tools = (findAnswer("tools") || {}).answer || "unknown";
-      const goals = (findAnswer("outcome") || {}).answer || "unknown";
-      const timeline = (findAnswer("timeline") || {}).answer || "unknown";
-      const budget = (findAnswer("budget") || {}).answer || "unknown";
+      const findAnswer = (keys, questionHints = keys) => {
+        const keyCandidates = keys.map((key) => String(key).toLowerCase());
+        const byKey = answers.find((item) =>
+          keyCandidates.includes(String(item.key || "").toLowerCase())
+        );
+        if (byKey?.answer) {
+          return byKey.answer;
+        }
+
+        const hints = questionHints.map((hint) => String(hint).toLowerCase());
+        const byQuestion = answers.find((item) => {
+          const question = String(item.question || "").toLowerCase();
+          return hints.some((hint) => question.includes(hint));
+        });
+        return byQuestion?.answer || "unknown";
+      };
+
+      const industry = findAnswer(["industry"], ["business", "industry"]);
+      const teamSize = findAnswer(["team_size"], ["team"]);
+      const painPoints = findAnswer(["pain_points"], ["bottleneck", "pain point"]);
+      const tools = findAnswer(["tools"], ["tools", "systems"]);
+      const goals = findAnswer(["goals"], ["outcome", "goal"]);
+      const timeline = findAnswer(["timeline"], ["timeline", "urgent", "timing"]);
+      const budget = findAnswer(["budget"], ["budget"]);
 
       const recommended = new Set(["AI Strategy Assessment"]);
       const pain = toLower(painPoints);
@@ -259,11 +385,14 @@ app.post("/api/walkthrough", async (req, res) => {
         recommended.add("Ongoing AI Support");
       }
 
+      const timing =
+        timeline === "unknown" ? "the timing you described" : `the stated timing (${timeline})`;
       const summary =
-        `Based on your input, we see near-term opportunities to reduce ` +
-        `friction in ${industry} workflows and deliver measurable wins within ` +
-        `your ${timeline} timeline. Our focus would be an assessment to pinpoint ` +
-        `quick ROI, then implement one high-impact workflow tied to your goals.`;
+        `Your answers point to workflow friction in ${industry} and a need to consider ` +
+        `${timing}. An AI Strategy Assessment would provide a structured way to ` +
+        `review the current tools, constraints, and goals before choosing an implementation. ` +
+        `Any first-workflow recommendation should be confirmed with the team rather than ` +
+        `treated as a forecast or guaranteed outcome.`;
 
       return {
         summary,
@@ -278,7 +407,7 @@ app.post("/api/walkthrough", async (req, res) => {
         },
         recommended_services: Array.from(recommended),
         suggested_next_step:
-          "Book a call to map the assessment and a 90-day execution plan."
+          "Book a call to review the assessment scope and choose a practical first workflow."
       };
     }
 
@@ -340,31 +469,45 @@ app.post("/api/walkthrough", async (req, res) => {
     const summaryText = parsed.summary || "Thanks for completing the walkthrough.";
     const suggestedNext = parsed.suggested_next_step || "Book a call to map the plan.";
 
+    const safeSummaryText = escapeHtml(summaryText);
+    const safeServicesList = escapeHtml(servicesList);
+    const safeSuggestedNext = escapeHtml(suggestedNext);
+    const safeExtracted = {
+      industry: escapeHtml(extracted.industry || "unknown"),
+      teamSize: escapeHtml(extracted.team_size || "unknown"),
+      painPoints: escapeHtml(extracted.pain_points || "unknown"),
+      tools: escapeHtml(extracted.tools || "unknown"),
+      goals: escapeHtml(extracted.goals || "unknown"),
+      timeline: escapeHtml(extracted.timeline || "unknown"),
+      budget: escapeHtml(extracted.budget || "unknown")
+    };
+    const submittedAt = new Date().toISOString();
+
     const html = `
       <div style="font-family: Arial, sans-serif; color: #0f172a;">
         <h2>AI Walkthrough Summary</h2>
-        <p>${summaryText}</p>
+        <p>${safeSummaryText}</p>
         <h3>Recommended Services</h3>
-        <p>${servicesList}</p>
+        <p>${safeServicesList}</p>
         <h3>Key Details</h3>
         <ul>
-          <li><strong>Industry:</strong> ${extracted.industry || "unknown"}</li>
-          <li><strong>Team size:</strong> ${extracted.team_size || "unknown"}</li>
-          <li><strong>Pain points:</strong> ${extracted.pain_points || "unknown"}</li>
-          <li><strong>Tools:</strong> ${extracted.tools || "unknown"}</li>
-          <li><strong>Goals:</strong> ${extracted.goals || "unknown"}</li>
-          <li><strong>Timeline:</strong> ${extracted.timeline || "unknown"}</li>
-          <li><strong>Budget:</strong> ${extracted.budget || "unknown"}</li>
+          <li><strong>Industry:</strong> ${safeExtracted.industry}</li>
+          <li><strong>Team size:</strong> ${safeExtracted.teamSize}</li>
+          <li><strong>Pain points:</strong> ${safeExtracted.painPoints}</li>
+          <li><strong>Tools:</strong> ${safeExtracted.tools}</li>
+          <li><strong>Goals:</strong> ${safeExtracted.goals}</li>
+          <li><strong>Timeline:</strong> ${safeExtracted.timeline}</li>
+          <li><strong>Budget:</strong> ${safeExtracted.budget}</li>
         </ul>
-        <p><strong>Next step:</strong> ${suggestedNext}</p>
+        <p><strong>Next step:</strong> ${safeSuggestedNext}</p>
         <p><a href="https://rossapplied.ai/book-call/">Book a call</a></p>
       </div>
     `;
 
     const answersHtml = answers
       .map((item) => {
-        const question = String(item?.question || "unknown");
-        const answer = String(item?.answer || "unknown");
+        const question = escapeHtml(item.question || "unknown");
+        const answer = escapeHtml(item.answer || "unknown");
         return `<li><strong>${question}</strong>: ${answer}</li>`;
       })
       .join("");
@@ -372,12 +515,12 @@ app.post("/api/walkthrough", async (req, res) => {
     const internalHtml = `
       <div style="font-family: Arial, sans-serif; color: #0f172a;">
         <h2>New AI Walkthrough Submission</h2>
-        <p><strong>Submitted at:</strong> ${new Date().toISOString()}</p>
-        <p><strong>User email:</strong> ${userEmail || "(not provided)"}</p>
+        <p><strong>Submitted at:</strong> ${escapeHtml(submittedAt)}</p>
+        <p><strong>User email:</strong> ${escapeHtml(userEmail || "(not provided)")}</p>
         <h3>Generated Summary</h3>
-        <p>${summaryText}</p>
+        <p>${safeSummaryText}</p>
         <h3>Recommended Services</h3>
-        <p>${servicesList}</p>
+        <p>${safeServicesList}</p>
         <h3>Submitted Answers</h3>
         <ul>${answersHtml}</ul>
       </div>
@@ -401,7 +544,7 @@ app.post("/api/walkthrough", async (req, res) => {
 
     const internalText = [
       "New AI Walkthrough Submission",
-      "Submitted at: " + new Date().toISOString(),
+      "Submitted at: " + submittedAt,
       "User email: " + (userEmail || "(not provided)"),
       "",
       "Summary:",

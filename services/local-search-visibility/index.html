@@ -9,19 +9,18 @@
       content="A 7-10 day implementation sprint that helps Tulsa service businesses become easier to find and understand in AI-assisted and local search."
     />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#1e3a5f" />
+    <meta name="theme-color" content="#11273d" />
     <link
       rel="canonical"
       href="https://rossapplied.ai/services/local-search-visibility/"
     />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/refresh.css" />
+    <link rel="stylesheet" href="/fixes.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Newsreader:opsz,wght@6..72,500;6..72,600&amp;display=swap" rel="stylesheet" />
     <meta
       property="og:title"
       content="Local Search Visibility Fix Sprint | Ross Applied AI"
@@ -36,7 +35,17 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://rossapplied.ai/og.png" />
+    <meta
+      property="og:image:alt"
+      content="Ross Applied — Practical AI for the work that runs your business."
+    />
     <meta name="twitter:card" content="summary" />
+    <meta name="twitter:image" content="https://rossapplied.ai/og.png" />
+    <meta
+      name="twitter:image:alt"
+      content="Ross Applied — Practical AI for the work that runs your business."
+    />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -108,27 +117,46 @@
         ]
       }
     </script>
+      <script src="/site.js" defer></script>
   </head>
-  <body>
-    <header class="nav">
+  <body class="local-search-page">
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="nav" data-site-header>
       <div class="container nav-inner">
-        <a class="logo" href="/">Ross Applied AI</a>
-        <nav class="nav-links">
+        <a class="logo" href="/" aria-label="Ross Applied AI home">
+          <span class="logo-mark" aria-hidden="true">RA</span>
+          <span class="logo-type">
+            <strong>Ross Applied</strong>
+            <small>AI consulting · Tulsa</small>
+          </span>
+        </a>
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-navigation"
+          data-nav-toggle
+        >
+          <span>Menu</span>
+          <span class="nav-toggle-icon" aria-hidden="true"></span>
+        </button>
+        <nav class="nav-links" id="site-navigation" aria-label="Primary">
           <a href="/services/">Services</a>
           <a href="/about/">About</a>
           <a href="/case-studies/">Case Studies</a>
-          <a href="/blog/">Blog</a>
-          <a href="/contact/">Contact</a>
+          <a href="/blog/">Insights</a>
+          <a href="/contact/?service=local-search-visibility">Contact</a>
+          <a class="nav-mobile-cta" href="/book-call/">Book a call</a>
         </nav>
-        <a class="button" href="/book-call/">Book a Call</a>
+        <a class="button button-small nav-cta" href="/book-call/">Book a call</a>
       </div>
     </header>
 
-    <section class="hero">
+        <main id="main-content">
+      <section class="hero">
       <div class="container hero-grid">
         <div>
-          <div class="eyebrow">Tulsa Local Discovery</div>
-          <h1>Help nearby customers find your business when they ask who to call.</h1>
+<h1>Help nearby customers find your business when they ask who to call.</h1>
           <p>
             Ross Applied AI fixes the website and local presence issues that can
             make a good business hard for AI assistants and local search systems
@@ -136,13 +164,13 @@
             and show you exactly what changed.
           </p>
           <div class="cta">
-            <a class="button" href="/contact/">Start the founding sprint</a>
+            <a class="button" href="/contact/?service=local-search-visibility">Start the founding sprint</a>
             <a class="button ghost" href="#included">See what is included</a>
           </div>
         </div>
         <div class="card">
-          <div class="tag">Founding Pilot</div>
-          <h3>$500 fixed scope</h3>
+
+          <h3>Founding pilot — $500 fixed scope</h3>
           <div class="list">
             <span>7&ndash;10 day delivery</span>
             <span>50% upfront</span>
@@ -157,8 +185,7 @@
     <section class="section">
       <div class="container two-col">
         <div>
-          <div class="eyebrow">The Opportunity</div>
-          <h2>Your business may be excellent and still be difficult to discover.</h2>
+<h2>Your business may be excellent and still be difficult to discover.</h2>
           <p class="lead">
             Search systems need clear, consistent facts about what you do,
             where you work, and why your business is relevant. Many local
@@ -181,8 +208,7 @@
 
     <section class="section alt" id="included">
       <div class="container">
-        <div class="eyebrow">What We Implement</div>
-        <h2>A focused repair sprint, not another score.</h2>
+<h2>A focused repair sprint, not another score.</h2>
         <p class="lead">
           The baseline check tells us where to work. The value is the
           implementation: practical changes to the systems your business
@@ -237,31 +263,30 @@
 
     <section class="section">
       <div class="container">
-        <div class="eyebrow">How It Works</div>
-        <h2>Measure, repair, verify.</h2>
+<h2>Measure, repair, verify.</h2>
         <p class="lead">
           A short engagement with a defined finish line and no long contract.
         </p>
         <div class="card-grid">
           <div class="card">
-            <div class="tag">Step 1</div>
-            <h3>Define the searches that matter</h3>
+
+            <h3>01. Define the searches that matter</h3>
             <p>
               We confirm your priority services, customer area, competitors,
               website access, and the questions that signal buying intent.
             </p>
           </div>
           <div class="card">
-            <div class="tag">Step 2</div>
-            <h3>Implement the strongest fixes</h3>
+
+            <h3>02. Implement the strongest fixes</h3>
             <p>
               We choose and complete three high-impact repairs that fit the
               sprint instead of handing you a long generic checklist.
             </p>
           </div>
           <div class="card">
-            <div class="tag">Step 3</div>
-            <h3>Verify and hand over the evidence</h3>
+
+            <h3>03. Verify and hand over the evidence</h3>
             <p>
               We check the implementation, rerun the documented baseline where
               useful, and explain what changed without overstating the result.
@@ -274,8 +299,7 @@
     <section class="section alt">
       <div class="container two-col">
         <div>
-          <div class="eyebrow">Best Fit</div>
-          <h2>Built for established local service businesses.</h2>
+<h2>Built for established local service businesses.</h2>
           <p class="lead">
             The sprint is a strong starting point for Tulsa-area HVAC, plumbing,
             electrical, roofing, home-service, and professional-service
@@ -290,7 +314,7 @@
           </div>
         </div>
         <div class="card">
-          <div class="tag">Honest Boundaries</div>
+
           <h3>What we will not promise</h3>
           <p>
             No one can guarantee placement in an AI answer, Google result, or
@@ -310,13 +334,12 @@
     <section class="section">
       <div class="container two-col">
         <div>
-          <div class="eyebrow">Founding Offer</div>
-          <h2>$500 for a 7&ndash;10 day sprint.</h2>
+<h2>$500 for a 7&ndash;10 day sprint.</h2>
           <p class="lead">
             The founding pilot is 50% upfront and 50% when the agreed work is
             delivered. The standard price after the founding period is $1,250.
           </p>
-          <a class="button" href="/contact/">Ask about fit</a>
+          <a class="button" href="/contact/?service=local-search-visibility">Ask about fit</a>
         </div>
         <div class="card">
           <h3>Fixed-scope assumptions</h3>
@@ -337,8 +360,7 @@
 
     <section class="section alt">
       <div class="container">
-        <div class="eyebrow">Questions</div>
-        <h2>What business owners usually ask.</h2>
+<h2>What business owners usually ask.</h2>
         <div class="card-grid">
           <div class="card">
             <h3>Can you guarantee a recommendation?</h3>
@@ -378,40 +400,58 @@
 
     <section class="section">
       <div class="container">
-        <div class="eyebrow">Start Here</div>
-        <h2>Make your local business easier to find and understand.</h2>
+<h2>Make your local business easier to find and understand.</h2>
         <p class="lead">
           Tell us what you do, where you serve, and which customers you want
           more of. We will confirm whether the fixed sprint is a sensible fit.
         </p>
         <div class="cta">
-          <a class="button" href="/contact/">Start a conversation</a>
+          <a class="button" href="/contact/?service=local-search-visibility">Start a conversation</a>
           <a class="button secondary" href="/book-call/">Book a Call</a>
         </div>
       </div>
     </section>
 
+    </main>
+
+
+
     <footer class="footer">
       <div class="container footer-grid">
-        <div>
-          <strong>Ross Applied AI</strong>
-          <p>Practical AI for Tulsa businesses.</p>
+        <div class="footer-brand">
+          <a class="logo" href="/" aria-label="Ross Applied AI home">
+            <span class="logo-mark" aria-hidden="true">RA</span>
+            <span class="logo-type">
+              <strong>Ross Applied</strong>
+              <small>AI consulting · Tulsa</small>
+            </span>
+          </a>
+          <p>
+            Practical AI strategy, implementation, and enablement for Oklahoma
+            businesses.
+          </p>
         </div>
         <div>
-          <div class="list">
+          <div class="footer-label">Explore</div>
+          <nav class="list" aria-label="Footer">
             <a href="/services/">Services</a>
             <a href="/services/local-search-visibility/">Visibility Sprint</a>
-            <a href="/case-studies/">Case Studies</a>
-            <a href="/blog/">Blog</a>
-          </div>
+            <a href="/case-studies/">Project Examples</a>
+            <a href="/blog/">Insights</a>
+          </nav>
         </div>
         <div>
+          <div class="footer-label">Contact</div>
           <div class="list">
-            <span>Tulsa, OK</span>
-            <a href="/contact/">hello@rossapplied.ai</a>
-            <a href="/book-call/">Book a Call</a>
+            <span>Tulsa, Oklahoma</span>
+            <a href="mailto:hello@rossapplied.ai">hello@rossapplied.ai</a>
+            <a href="/book-call/">Book a call</a>
           </div>
         </div>
+      </div>
+      <div class="container footer-bottom">
+        <span>© <span data-current-year>2026</span> Ross Applied AI.</span>
+        <span>Strategy · Integration · Training · Implementation</span>
       </div>
     </footer>
   </body>

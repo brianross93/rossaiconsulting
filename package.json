@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "validate": "node scripts/validate-site.mjs"
   },
   "repository": {
     "type": "git",
