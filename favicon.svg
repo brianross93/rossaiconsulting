@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-label="Ross Applied AI">
-  <rect width="64" height="64" rx="14" fill="#f97316"/>
-  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central"
-        font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700"
-        fill="#ffffff">RC.AI</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Ross Applied AI">
+  <rect width="64" height="64" fill="#13252f"/>
+  <path d="M0 52h64v12H0z" fill="#17665f"/>
+  <text x="32" y="31" text-anchor="middle" dominant-baseline="central"
+        font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="700"
+        letter-spacing="1" fill="#f3eee4">RA</text>
 </svg>

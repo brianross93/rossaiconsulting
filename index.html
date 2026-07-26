@@ -13,7 +13,7 @@
        content="ai consulting tulsa, ai integration tulsa, ai transformation tulsa, ai services tulsa oklahoma"
      />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#1e3a5f" />
+    <meta name="theme-color" content="#13252f" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta property="og:title" content="Ross Applied AI Consulting | AI Consulting in Tulsa" />
      <meta
@@ -49,11 +49,11 @@
        }
      </script>
    </head>
-   <body>
+   <body class="page-home">
      <header class="nav">
        <div class="container nav-inner">
         <a class="logo" href="/">Ross Applied AI</a>
-         <nav class="nav-links">
+         <nav class="nav-links" aria-label="Primary">
            <a href="/services/">Services</a>
            <a href="/about/">About</a>
            <a href="/case-studies/">Case Studies</a>
@@ -63,7 +63,7 @@
          <a class="button" href="/book-call/">Book a Call</a>
        </div>
      </header>
- 
+
      <section class="hero">
        <div class="container hero-grid">
          <div>
@@ -81,12 +81,12 @@
           </div>
         </div>
          <div class="card">
-          <div class="tag">Tulsa-Based. Serving Oklahoma.</div>
-           <h3>Local partner, real outcomes</h3>
+          <div class="tag">Tulsa-based. Oklahoma-focused.</div>
+           <h3>Built for real operations</h3>
            <p>
-            We work with manufacturing, logistics, and professional services
-            teams across Tulsa, OKC, and the greater Oklahoma area to streamline
-            workflows, reduce costs, and unlock new revenue with AI.
+            Practical support for manufacturing, logistics, and professional
+            services teams that need clearer workflows, lower friction, and a
+            sensible path from AI idea to implementation.
            </p>
            <div class="pill-list" style="margin-top: 16px">
              <span class="pill">AI Strategy</span>
@@ -97,8 +97,8 @@
          </div>
        </div>
      </section>
- 
-     <section class="section">
+
+     <section class="section challenge-section">
        <div class="container">
          <div class="eyebrow">The Challenge</div>
          <h2>AI is everywhere. Most businesses are confused.</h2>
@@ -130,8 +130,8 @@
          </div>
        </div>
      </section>
- 
-     <section class="section alt">
+
+     <section class="section process-section">
        <div class="container">
          <div class="eyebrow">Our Process</div>
          <h2>Assess → Implement → Optimize</h2>
@@ -163,41 +163,45 @@
          </div>
        </div>
      </section>
- 
-     <section class="section">
+
+     <section class="section opportunity-section">
        <div class="container">
-         <div class="eyebrow">Social Proof</div>
-         <h2>Results businesses in Tulsa care about</h2>
+         <div class="eyebrow">Common Opportunities</div>
+         <h2>Start where the work is repetitive and measurable.</h2>
          <p class="lead">
-           Practical AI means measurable outcomes, not experiments.
+           The strongest AI projects usually begin with a specific workflow,
+           a visible bottleneck, and a result the team can verify.
          </p>
          <div class="card-grid">
            <div class="card">
              <div class="badge">Manufacturing</div>
-             <h3>18% faster quoting</h3>
+             <h3>Shorter quote cycles</h3>
              <p>
-               Automated intake and proposal drafting reduced turnaround time.
+               Structure intake and first-draft proposals so experienced people
+               can spend more time reviewing the work that matters.
              </p>
            </div>
            <div class="card">
              <div class="badge">Professional Services</div>
-             <h3>30% admin time saved</h3>
+             <h3>Less administrative drag</h3>
              <p>
-               Copilot + workflow automations eliminated repetitive tasks.
+               Connect approved AI tools to recurring documentation, follow-up,
+               and internal knowledge workflows.
              </p>
            </div>
            <div class="card">
              <div class="badge">Logistics</div>
-             <h3>Improved on-time delivery</h3>
+             <h3>More resilient scheduling</h3>
              <p>
-               AI-driven scheduling reduced last-minute dispatch changes.
+               Surface exceptions earlier and give dispatch teams clearer
+               information when plans change.
              </p>
            </div>
          </div>
        </div>
      </section>
- 
-     <section class="section alt">
+
+     <section class="section alt services-section">
        <div class="container">
          <div class="eyebrow">Services</div>
          <h2>AI services built for Tulsa businesses</h2>
@@ -255,8 +259,8 @@
          </div>
        </div>
      </section>
- 
-     <section class="section">
+
+     <section class="section local-section">
        <div class="container two-col">
          <div>
            <div class="eyebrow">Local Focus</div>
@@ -284,7 +288,7 @@
        </div>
      </section>
 
-    <section class="section alt">
+    <section class="section alt coverage-section">
       <div class="container two-col">
         <div>
           <div class="eyebrow">Service Area</div>
@@ -304,8 +308,8 @@
         </div>
       </div>
     </section>
- 
-    <section class="section">
+
+    <section class="section closing-section">
        <div class="container">
          <div class="eyebrow">Ready to start?</div>
          <h2>Let’s build your AI roadmap.</h2>
@@ -331,7 +335,7 @@
         </div>
        </div>
      </section>
- 
+
      <footer class="footer">
        <div class="container footer-grid">
          <div>
@@ -354,10 +358,10 @@
          </div>
        </div>
      </footer>
-    <button class="chatbot-launcher" id="chatbotLauncher" type="button">
-      Chat with Ross Applied AI
+    <button class="chatbot-launcher" id="chatbotLauncher" type="button" aria-controls="chatbotPanel" aria-expanded="false" aria-label="Chat with Ross Applied AI">
+      Ask Ross Applied
     </button>
-    <div class="chatbot-panel" id="chatbotPanel" role="dialog" aria-live="polite">
+    <div class="chatbot-panel" id="chatbotPanel" role="dialog" aria-label="Ross Applied AI concierge" aria-live="polite" aria-hidden="true">
       <div class="chatbot-header">
         <h4>AI Concierge</h4>
         <p class="note" style="color: rgba(255, 255, 255, 0.8)">
@@ -511,7 +515,21 @@
         }
 
         launcher.addEventListener("click", function () {
-          panel.classList.toggle("open");
+          var isOpen = panel.classList.toggle("open");
+          launcher.setAttribute("aria-expanded", String(isOpen));
+          panel.setAttribute("aria-hidden", String(!isOpen));
+          if (isOpen) {
+            input.focus();
+          }
+        });
+
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && panel.classList.contains("open")) {
+            panel.classList.remove("open");
+            launcher.setAttribute("aria-expanded", "false");
+            panel.setAttribute("aria-hidden", "true");
+            launcher.focus();
+          }
         });
 
         actions.forEach(function (button) {

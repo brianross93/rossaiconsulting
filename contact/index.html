@@ -20,7 +20,7 @@
      <header class="nav">
        <div class="container nav-inner">
         <a class="logo" href="/">Ross Applied AI</a>
-         <nav class="nav-links">
+         <nav class="nav-links" aria-label="Primary">
            <a href="/services/">Services</a>
            <a href="/about/">About</a>
            <a href="/case-studies/">Case Studies</a>
@@ -30,7 +30,7 @@
          <a class="button" href="/book-call/">Book a Call</a>
        </div>
      </header>
- 
+
      <section class="hero">
        <div class="container">
          <div class="eyebrow">Contact</div>
@@ -41,7 +41,7 @@
          </p>
        </div>
      </section>
- 
+
     <section class="section">
       <div class="container two-col">
         <div>
@@ -55,11 +55,12 @@
             method="post"
             enctype="text/plain"
           >
-            <input type="text" name="name" placeholder="Full name" required />
-            <input type="email" name="email" placeholder="Email address" required />
-            <input type="text" name="company" placeholder="Company name" />
-            <select name="service">
+            <input type="text" name="name" placeholder="Full name" aria-label="Full name" required />
+            <input type="email" name="email" placeholder="Email address" aria-label="Email address" required />
+            <input type="text" name="company" placeholder="Company name" aria-label="Company name" />
+            <select name="service" aria-label="Service of interest">
               <option value="">Service of interest</option>
+              <option>Local Search Visibility Fix Sprint</option>
               <option>AI Strategy Assessment</option>
               <option>AI Integration</option>
               <option>Custom AI Development</option>
@@ -69,7 +70,7 @@
             </select>
             <textarea
               name="message"
-              placeholder="Tell us about your goals"
+              placeholder="Tell us about your goals" aria-label="Tell us about your goals"
               required
             ></textarea>
             <button class="button" type="submit">Send message</button>
@@ -92,7 +93,7 @@
               <a href="mailto:hello@rossapplied.ai">hello@rossapplied.ai</a></span
             >
             <span>Calendly: <a href="/book-call/">Book a call</a></span>
-            <span>LinkedIn: Coming soon</span>
+
           </div>
           <div class="tag" style="margin-top: 18px">Schedule</div>
           <div
@@ -108,7 +109,7 @@
         </div>
       </div>
     </section>
- 
+
      <footer class="footer">
        <div class="container footer-grid">
          <div>

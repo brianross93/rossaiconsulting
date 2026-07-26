@@ -9,13 +9,13 @@
       content="Interactive AI walkthrough that maps your business goals to Ross Applied AI services."
     />
     <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#0b1020" />
+    <meta name="theme-color" content="#13252f" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="stylesheet" href="/styles.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -23,7 +23,7 @@
     <header class="nav">
       <div class="container nav-inner">
         <a class="logo" href="/">Ross Applied AI</a>
-        <nav class="nav-links">
+        <nav class="nav-links" aria-label="Primary">
           <a href="/services/">Services</a>
           <a href="/about/">About</a>
           <a href="/case-studies/">Case Studies</a>
@@ -279,7 +279,7 @@
           renderChips(current);
           updateProgress();
           backButton.disabled = currentIndex === 0;
-          answerInput.focus();
+          answerInput.focus({ preventScroll: true });
         }
 
         function renderResults(data) {
